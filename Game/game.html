@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahads Repository: Matcha Racer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        arcade: ['"Press Start 2P"', 'monospace'],
+                    },
+                    colors: {
+                        matcha: {
+                            50: '#f6f8f4',
+                            100: '#ebf0e6',
+                            300: '#bbcea8',
+                            500: '#7f9c60',
+                            600: '#647e49',
+                            800: '#415231',
+                            900: '#23301a',
+                            950: '#0e140b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+        canvas {
+            image-rendering: pixelated;
+        }
+        .glow-matcha {
+            box-shadow: 0 0 25px rgba(127, 156, 96, 0.4);
+        }
+        .glow-amber {
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-matcha-950 text-matcha-100 min-h-screen flex flex-col justify-between overflow-x-hidden font-sans">
+
+    <header class="w-full max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-matcha-800/50">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-matcha-500 flex items-center justify-center text-white shadow-md font-bold">
+                <i data-lucide="car" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                    MAHAD'S REPOSITORY <span class="text-xs px-2 py-0.5 rounded-full bg-matcha-800 text-matcha-300 font-normal">MATCHA RACER</span>
+                </h1>
+                <p class="text-xs text-matcha-300">Arrow Keys / WASD = Steer & Accelerate &bull; Space = Nitro / Horn</p>
+            </div>
+        </div>
+
+        <!-- Scores Widget -->
+        <div class="flex items-center gap-3 bg-matcha-900/80 px-4 py-2 rounded-2xl border border-matcha-800 shadow-inner">
+            <div class="text-center px-2 border-r border-matcha-800">
+                <span class="text-[10px] uppercase font-bold text-matcha-300 block">Score</span>
+                <span id="scoreText" class="text-lg font-arcade text-emerald-400">0</span>
+            </div>
+            <div class="text-center px-2 border-r border-matcha-800">
+                <span class="text-[10px] uppercase font-bold text-matcha-300 block">Coins</span>
+                <span id="coinsText" class="text-lg font-arcade text-amber-400">0</span>
+            </div>
+            <div class="text-center px-2 border-r border-matcha-800">
+                <span class="text-[10px] uppercase font-bold text-matcha-300 block">Distance</span>
+                <span id="distText" class="text-lg font-arcade text-cyan-400">0m</span>
+            </div>
+            <div class="text-center px-2">
+                <span class="text-[10px] uppercase font-bold text-yellow-400/80 block">High</span>
+                <span id="highScoreText" class="text-lg font-arcade text-yellow-400">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-4 flex flex-col items-center justify-center">
+        <div class="relative w-full max-w-2xl bg-matcha-900/90 rounded-3xl p-3 border-2 border-matcha-800 shadow-2xl flex flex-col items-center">
+            
+            <!-- HUD Gauge Bar -->
+            <div class="w-full flex items-center justify-between px-3 py-1.5 mb-2 bg-matcha-950/70 rounded-xl border border-matcha-800/80 text-xs font-semibold">
+                <!-- Speed Display -->
+                <div class="flex items-center gap-2">
+                    <i data-lucide="gauge" class="w-4 h-4 text-emerald-400"></i>
+                    <span id="speedDisplay" class="font-arcade text-emerald-400 text-sm">0 KM/H</span>
+                </div>
+
+                <!-- Health Bar -->
+                <div class="flex items-center gap-2">
+                    <span class="text-matcha-300 text-[11px]">DURABILITY</span>
+                    <div class="w-24 h-3 bg-matcha-950 rounded-full overflow-hidden border border-matcha-800">
+                        <div id="healthBar" class="h-full bg-emerald-500 transition-all duration-200" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <!-- Nitro Bar -->
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-[11px]">NITRO</span>
+                    <div class="w-20 h-3 bg-matcha-950 rounded-full overflow-hidden border border-matcha-800">
+                        <div id="nitroBar" class="h-full bg-amber-500 transition-all duration-200" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Canvas Container -->
+            <div class="relative w-full aspect-[4/5] sm:aspect-[4/3] rounded-2xl overflow-hidden bg-matcha-950 border border-matcha-800">
+                <canvas id="gameCanvas" class="w-full h-full block"></canvas>
+
+                <!-- Toast/Combo Notification Banner -->
+                <div id="toastAlert" class="absolute top-4 left-1/2 -translate-x-1/2 bg-amber-500/90 text-matcha-950 font-extrabold text-xs px-4 py-1.5 rounded-full shadow-lg transition-all duration-300 opacity-0 scale-90 pointer-events-none">
+                    NEAR MISS! +100
+                </div>
+
+                <!-- Game Start / Game Over Overlay -->
+                <div id="gameOverlay" class="absolute inset-0 bg-matcha-950/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
+                    
+                    <!-- Start Screen Content -->
+                    <div id="startStateContent" class="space-y-5 max-w-md">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-matcha-500/20 border border-matcha-500/50 flex items-center justify-center text-matcha-300 animate-bounce">
+                            <i data-lucide="trophy" class="w-8 h-8 text-matcha-400"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-wide">MAHAD'S MATCHA RACER</h2>
+                            <p class="text-sm text-matcha-300 mt-2 leading-relaxed">
+                                Dodge high-speed traffic, drift around oil slicks, collect shiny gold coins, and blast your <span class="text-amber-400 font-semibold">Nitro Boost</span>!
+                            </p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3 text-left bg-matcha-900/60 p-3 rounded-2xl border border-matcha-800/80 text-xs text-matcha-200">
+                            <div class="flex items-center gap-2"><kbd class="px-2 py-0.5 bg-matcha-800 rounded border border-matcha-700 text-white font-mono">◄ ► / A D</kbd> Steer</div>
+                            <div class="flex items-center gap-2"><kbd class="px-2 py-0.5 bg-matcha-800 rounded border border-matcha-700 text-white font-mono">▲ / W</kbd> Gas</div>
+                            <div class="flex items-center gap-2"><kbd class="px-2 py-0.5 bg-matcha-800 rounded border border-matcha-700 text-white font-mono">▼ / S</kbd> Brake</div>
+                            <div class="flex items-center gap-2"><kbd class="px-2 py-0.5 bg-matcha-800 rounded border border-matcha-700 text-white font-mono">Space</kbd> Nitro Boost</div>
+                        </div>
+
+                        <button id="startBtn" onclick="startGame()" class="w-full py-4 rounded-2xl bg-matcha-500 hover:bg-matcha-600 text-white font-bold text-base shadow-lg hover:shadow-matcha-500/30 hover:scale-[1.02] active:scale-95 transition-all">
+                            START RACING
+                        </button>
+                    </div>
+
+                    <!-- Game Over Content -->
+                    <div id="gameOverContent" class="hidden space-y-5 max-w-md w-full">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/20 border border-red-500/50 flex items-center justify-center text-red-400">
+                            <i data-lucide="flame" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-3xl font-extrabold text-red-400 tracking-wide">TOTAL CRASH!</h2>
+                            <p id="deathReason" class="text-sm text-matcha-200 mt-1">Your car totaled in heavy traffic!</p>
+                        </div>
+                        
+                        <div class="bg-matcha-900/90 p-4 rounded-2xl border border-matcha-800 grid grid-cols-3 gap-2 text-center">
+                            <div>
+                                <span class="text-[10px] text-matcha-400 uppercase font-bold block">Score</span>
+                                <span id="finalScore" class="text-lg font-arcade text-emerald-400">0</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-matcha-400 uppercase font-bold block">Coins</span>
+                                <span id="finalCoins" class="text-lg font-arcade text-amber-400">0</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-matcha-400 uppercase font-bold block">Distance</span>
+                                <span id="finalDist" class="text-lg font-arcade text-cyan-400">0m</span>
+                            </div>
+                        </div>
+
+                        <button onclick="startGame()" class="w-full py-4 rounded-2xl bg-matcha-500 hover:bg-matcha-600 text-white font-bold text-base shadow-lg hover:shadow-matcha-500/30 hover:scale-[1.02] active:scale-95 transition-all">
+                            DRIVE AGAIN
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full max-w-2xl grid grid-cols-3 gap-3 mt-4 md:hidden">
+            <button id="btnLeft" class="py-4 bg-matcha-800 active:bg-matcha-700 text-white font-bold rounded-2xl shadow-lg text-lg flex items-center justify-center">◄</button>
+            <div class="grid grid-rows-2 gap-2">
+                <button id="btnGas" class="py-2 bg-emerald-600 active:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1">▲ GAS</button>
+                <button id="btnNitro" class="py-2 bg-amber-600 active:bg-amber-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1">⚡ NITRO</button>
+            </div>
+            <button id="btnRight" class="py-4 bg-matcha-800 active:bg-matcha-700 text-white font-bold rounded-2xl shadow-lg text-lg flex items-center justify-center">►</button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-3 text-xs text-matcha-300/60 border-t border-matcha-900">
+        Mahad's Repository Arcade Series &bull; Built with HTML5 Canvas & Web Audio API
+    </footer>
+
+    <script>
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+                this.engineOsc = null;
+                this.engineGain = null;
+            }
+            
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    this.startEngineSound();
+                }
+            }
+
+            startEngineSound() {
+                if (!this.ctx) return;
+                this.engineOsc = this.ctx.createOscillator();
+                this.engineGain = this.ctx.createGain();
+                
+                this.engineOsc.type = 'sawtooth';
+                this.engineOsc.frequency.setValueAtTime(60, this.ctx.currentTime);
+                this.engineGain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+                
+                this.engineOsc.connect(this.engineGain);
+                this.engineGain.connect(this.ctx.destination);
+                this.engineOsc.start();
+            }
+
+            updateEnginePitch(speedRatio) {
+                if (!this.ctx || !this.engineOsc) return;
+                const freq = 50 + speedRatio * 180;
+                this.engineOsc.frequency.setTargetAtTime(freq, this.ctx.currentTime, 0.05);
+            }
+
+            playCoin() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(987.77, this.ctx.currentTime); // B5
+                osc.frequency.setValueAtTime(1318.51, this.ctx.currentTime + 0.08); // E6
+                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.2);
+            }
+
+            playNitro() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.35);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.35);
+            }
+
+            playCrash() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.4);
+                gain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.4);
+            }
+
+            playNearMiss() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(500, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(900, this.ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.1);
+            }
+        }
+
+        const sfx = new SoundFX();
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = 500;
+            canvas.height = 650;
+        }
+        resizeCanvas();
+
+        // Global State
+        let isRunning = false;
+        let animationFrameId = null;
+        let score = 0;
+        let coins = 0;
+        let distanceMeters = 0;
+        let highScore = parseInt(localStorage.getItem('matcha_racer_highscore') || '0');
+        document.getElementById('highScoreText').textContent = highScore;
+
+        // Key states
+        const keys = {
+            left: false,
+            right: false,
+            up: false,
+            down: false,
+            space: false
+        };
+
+        const player = {
+            x: 220,
+            y: 500,
+            width: 44,
+            height: 76,
+            speed: 0,
+            maxSpeed: 14,
+            acceleration: 0.25,
+            deceleration: 0.12,
+            steeringSpeed: 6.5,
+            health: 100,
+            nitro: 100,
+            isNitroActive: false,
+            invincibleTimer: 0,
+
+            reset() {
+                this.x = canvas.width / 2 - this.width / 2;
+                this.y = canvas.height - 120;
+                this.speed = 0;
+                this.health = 100;
+                this.nitro = 100;
+                this.isNitroActive = false;
+                this.invincibleTimer = 0;
+            },
+
+            update() {
+                // Nitro mechanic
+                if (keys.space && this.nitro > 5) {
+                    if (!this.isNitroActive) sfx.playNitro();
+                    this.isNitroActive = true;
+                    this.nitro -= 0.8;
+                } else {
+                    this.isNitroActive = false;
+                    if (this.nitro < 100) this.nitro += 0.15;
+                }
+
+                const currentMaxSpeed = this.isNitroActive ? this.maxSpeed * 1.5 : this.maxSpeed;
+
+                // Acceleration / Deceleration
+                if (keys.up) {
+                    this.speed = Math.min(this.speed + this.acceleration, currentMaxSpeed);
+                } else if (keys.down) {
+                    this.speed = Math.max(this.speed - this.acceleration * 1.8, 0);
+                } else {
+                    this.speed = Math.max(this.speed - this.deceleration, 0);
+                }
+
+                // Auto forward motion minimum
+                if (this.speed < 2.5 && isRunning) this.speed = 2.5;
+
+                // Steering
+                if (keys.left) {
+                    this.x -= this.steeringSpeed * (this.speed / currentMaxSpeed + 0.4);
+                }
+                if (keys.right) {
+                    this.x += this.steeringSpeed * (this.speed / currentMaxSpeed + 0.4);
+                }
+
+                // Road bounds check
+                const roadLeft = 70;
+                const roadRight = canvas.width - 70 - this.width;
+                if (this.x < roadLeft) {
+                    this.x = roadLeft;
+                    this.speed *= 0.92; // Off-road slowdown
+                }
+                if (this.x > roadRight) {
+                    this.x = roadRight;
+                    this.speed *= 0.92;
+                }
+
+                if (this.invincibleTimer > 0) this.invincibleTimer--;
+
+                // Update HUD
+                document.getElementById('healthBar').style.width = `${Math.max(0, this.health)}%`;
+                document.getElementById('nitroBar').style.width = `${Math.max(0, this.nitro)}%`;
+                document.getElementById('speedDisplay').textContent = `${Math.floor(this.speed * 18)} KM/H`;
+
+                sfx.updateEnginePitch(this.speed / this.maxSpeed);
+            },
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+
+                // Slight tilt when steering
+                if (keys.left) ctx.rotate(-0.06);
+                if (keys.right) ctx.rotate(0.06);
+
+                // Invincibility flash
+                if (this.invincibleTimer % 4 > 2) {
+                    ctx.restore();
+                    return;
+                }
+
+                // Nitro exhaust flame effect
+                if (this.isNitroActive) {
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.beginPath();
+                    ctx.moveTo(-10, this.height / 2);
+                    ctx.lineTo(0, this.height / 2 + 25 + Math.random() * 15);
+                    ctx.lineTo(10, this.height / 2);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                // Car Body Shadow
+                ctx.fillStyle = 'rgba(0,0,0,0.35)';
+                ctx.fillRect(-this.width / 2 + 4, -this.height / 2 + 6, this.width, this.height);
+
+                // Car Main Body (Matcha Green Palette)
+                ctx.fillStyle = '#7f9c60';
+                ctx.strokeStyle = '#415231';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.roundRect(-this.width / 2, -this.height / 2, this.width, this.height, 10);
+                ctx.fill();
+                ctx.stroke();
+
+                // Racing Stripes
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(-6, -this.height / 2, 12, this.height);
+
+                // Windshield & Glass
+                ctx.fillStyle = '#141a10';
+                ctx.beginPath();
+                ctx.roundRect(-this.width / 2 + 6, -this.height / 2 + 18, this.width - 12, 22, 4);
+                ctx.fill();
+
+                // Headlights
+                ctx.fillStyle = '#fef08a';
+                ctx.fillRect(-this.width / 2 + 4, -this.height / 2 + 2, 8, 4);
+                ctx.fillRect(this.width / 2 - 12, -this.height / 2 + 2, 8, 4);
+
+                // Headlight Beams
+                const beamGrad = ctx.createLinearGradient(0, -this.height / 2, 0, -this.height / 2 - 120);
+                beamGrad.addColorStop(0, 'rgba(254, 240, 138, 0.35)');
+                beamGrad.addColorStop(1, 'rgba(254, 240, 138, 0)');
+                ctx.fillStyle = beamGrad;
+                ctx.beginPath();
+                ctx.moveTo(-this.width / 2, -this.height / 2);
+                ctx.lineTo(-this.width / 2 - 30, -this.height / 2 - 120);
+                ctx.lineTo(this.width / 2 + 30, -this.height / 2 - 120);
+                ctx.lineTo(this.width / 2, -this.height / 2);
+                ctx.closePath();
+                ctx.fill();
+
+                // Tail Lights
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(-this.width / 2 + 4, this.height / 2 - 4, 8, 3);
+                ctx.fillRect(this.width / 2 - 12, this.height / 2 - 4, 8, 3);
+
+                ctx.restore();
+            }
+        };
+
+        let roadOffset = 0;
+        function drawRoad() {
+            // Grass sides
+            ctx.fillStyle = '#141a10';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Curb Borders
+            ctx.fillStyle = '#415231';
+            ctx.fillRect(60, 0, 10, canvas.height);
+            ctx.fillRect(canvas.width - 70, 0, 10, canvas.height);
+
+            // Asphalt
+            ctx.fillStyle = '#1e2618';
+            ctx.fillRect(70, 0, canvas.width - 140, canvas.height);
+
+            // Animated Lane Dividers (3 lanes)
+            roadOffset = (roadOffset + player.speed) % 60;
+
+            ctx.strokeStyle = '#7f9c60';
+            ctx.lineWidth = 4;
+            ctx.setLineDash([30, 30]);
+            ctx.lineDashOffset = -roadOffset;
+
+            // Lane 1 & Lane 2 separators
+            const laneWidth = (canvas.width - 140) / 3;
+            ctx.beginPath();
+            ctx.moveTo(70 + laneWidth, 0);
+            ctx.lineTo(70 + laneWidth, canvas.height);
+            ctx.moveTo(70 + laneWidth * 2, 0);
+            ctx.lineTo(70 + laneWidth * 2, canvas.height);
+            ctx.stroke();
+            ctx.setLineDash([]); // Reset dash
+        }
+
+        const traffic = [];
+        const trafficColors = ['#dc2626', '#2563eb', '#d97706', '#9333ea', '#059669'];
+
+        function spawnTraffic() {
+            if (Math.random() < 0.025) {
+                const laneWidth = (canvas.width - 140) / 3;
+                const laneIndex = Math.floor(Math.random() * 3);
+                const laneX = 70 + laneIndex * laneWidth + laneWidth / 2 - 20;
+
+                // Ensure distance between cars in same lane
+                const isTooClose = traffic.some(car => Math.abs(car.x - laneX) < 10 && car.y < 120);
+                if (!isTooClose) {
+                    traffic.push({
+                        x: laneX,
+                        y: -100,
+                        width: 40,
+                        height: 70,
+                        speed: Math.random() * 2 + 3,
+                        color: trafficColors[Math.floor(Math.random() * trafficColors.length)],
+                        passed: false
+                    });
+                }
+            }
+        }
+
+        function updateTraffic() {
+            for (let i = traffic.length - 1; i >= 0; i--) {
+                const car = traffic[i];
+                car.y += player.speed - car.speed;
+
+                // Collision Check with Player
+                if (
+                    player.x < car.x + car.width &&
+                    player.x + player.width > car.x &&
+                    player.y < car.y + car.height &&
+                    player.y + player.height > car.y
+                ) {
+                    if (player.invincibleTimer === 0) {
+                        player.health -= 30;
+                        player.speed = 2;
+                        player.invincibleTimer = 40;
+                        sfx.playCrash();
+
+                        if (player.health <= 0) {
+                            endGame("Your car sustained critical crash damage!");
+                            return;
+                        }
+                    }
+                }
+
+                // Near Miss Bonus System
+                const distY = Math.abs(player.y - car.y);
+                const distX = Math.abs(player.x - car.x);
+                if (!car.passed && distY < 30 && distX < 55 && distX > 35) {
+                    car.passed = true;
+                    score += 100;
+                    showToast("NEAR MISS! +100");
+                    sfx.playNearMiss();
+                }
+
+                // Remove offscreen
+                if (car.y > canvas.height + 120 || car.y < -300) {
+                    traffic.splice(i, 1);
+                }
+            }
+        }
+
+        function drawTraffic() {
+            traffic.forEach(car => {
+                ctx.save();
+                ctx.translate(car.x + car.width / 2, car.y + car.height / 2);
+
+                // Shadow
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.fillRect(-car.width / 2 + 3, -car.height / 2 + 5, car.width, car.height);
+
+                // Body
+                ctx.fillStyle = car.color;
+                ctx.beginPath();
+                ctx.roundRect(-car.width / 2, -car.height / 2, car.width, car.height, 8);
+                ctx.fill();
+
+                // Windshield
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-car.width / 2 + 5, -car.height / 2 + 15, car.width - 10, 16);
+
+                // Rear lights
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(-car.width / 2 + 3, car.height / 2 - 3, 6, 3);
+                ctx.fillRect(car.width / 2 - 9, car.height / 2 - 3, 6, 3);
+
+                ctx.restore();
+            });
+        }
+
+        const items = [];
+
+        function spawnItems() {
+            if (Math.random() < 0.02) {
+                const laneWidth = (canvas.width - 140) / 3;
+                const laneIndex = Math.floor(Math.random() * 3);
+                const laneX = 70 + laneIndex * laneWidth + laneWidth / 2 - 12;
+
+                const types = ['coin', 'coin', 'coin', 'repair', 'oil'];
+                const type = types[Math.floor(Math.random() * types.length)];
+
+                items.push({
+                    x: laneX,
+                    y: -50,
+                    width: 24,
+                    height: 24,
+                    type: type
+                });
+            }
+        }
+
+        function updateItems() {
+            for (let i = items.length - 1; i >= 0; i--) {
+                const item = items[i];
+                item.y += player.speed;
+
+                // Pickup Collision Check
+                if (
+                    player.x < item.x + item.width &&
+                    player.x + player.width > item.x &&
+                    player.y < item.y + item.height &&
+                    player.y + player.height > item.y
+                ) {
+                    if (item.type === 'coin') {
+                        coins += 1;
+                        score += 50;
+                        sfx.playCoin();
+                    } else if (item.type === 'repair') {
+                        player.health = Math.min(100, player.health + 35);
+                        showToast("REPAIRED! +35 HP");
+                        sfx.playCoin();
+                    } else if (item.type === 'oil') {
+                        player.speed *= 0.5;
+                        player.x += (Math.random() - 0.5) * 60; // Spinout bump
+                        showToast("OIL SLICK! SLIP!");
+                        sfx.playCrash();
+                    }
+                    items.splice(i, 1);
+                    continue;
+                }
+
+                if (item.y > canvas.height + 50) {
+                    items.splice(i, 1);
+                }
+            }
+        }
+
+        function drawItems() {
+            items.forEach(item => {
+                ctx.save();
+                ctx.translate(item.x + item.width / 2, item.y + item.height / 2);
+
+                if (item.type === 'coin') {
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 12, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#fef08a';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (item.type === 'repair') {
+                    ctx.fillStyle = '#10b981';
+                    ctx.beginPath();
+                    ctx.roundRect(-12, -12, 24, 24, 6);
+                    ctx.fill();
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(-3, -8, 6, 16);
+                    ctx.fillRect(-8, -3, 16, 6);
+                } else if (item.type === 'oil') {
+                    ctx.fillStyle = '#0f1710';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, 18, 12, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            });
+        }
+
+        let toastTimeout = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toastAlert');
+            toast.textContent = msg;
+            toast.classList.remove('opacity-0', 'scale-90');
+            toast.classList.add('opacity-100', 'scale-100');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'scale-100');
+                toast.classList.add('opacity-0', 'scale-90');
+            }, 1200);
+        }
+
+        function updateUI() {
+            document.getElementById('scoreText').textContent = Math.floor(score);
+            document.getElementById('coinsText').textContent = coins;
+            document.getElementById('distText').textContent = `${Math.floor(distanceMeters)}m`;
+
+            if (score > highScore) {
+                highScore = Math.floor(score);
+                localStorage.setItem('matcha_racer_highscore', highScore.toString());
+                document.getElementById('highScoreText').textContent = highScore;
+            }
+        }
+
+        function gameLoop() {
+            if (!isRunning) return;
+
+            // Distance & Score increment
+            distanceMeters += player.speed * 0.15;
+            score += player.speed * 0.05;
+
+            // Updates
+            player.update();
+            spawnTraffic();
+            updateTraffic();
+            spawnItems();
+            updateItems();
+            updateUI();
+
+            // Render
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawRoad();
+            drawItems();
+            drawTraffic();
+            player.draw();
+
+            if (isRunning) {
+                animationFrameId = requestAnimationFrame(gameLoop);
+            }
+        }
+
+        function startGame() {
+            sfx.init();
+            score = 0;
+            coins = 0;
+            distanceMeters = 0;
+            traffic.length = 0;
+            items.length = 0;
+
+            player.reset();
+            isRunning = true;
+
+            document.getElementById('gameOverlay').classList.add('hidden');
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            gameLoop();
+        }
+
+        function endGame(reason) {
+            isRunning = false;
+            sfx.playCrash();
+
+            document.getElementById('deathReason').textContent = reason;
+            document.getElementById('finalScore').textContent = Math.floor(score);
+            document.getElementById('finalCoins').textContent = coins;
+            document.getElementById('finalDist').textContent = `${Math.floor(distanceMeters)}m`;
+
+            document.getElementById('startStateContent').classList.add('hidden');
+            document.getElementById('gameOverContent').classList.remove('hidden');
+            document.getElementById('gameOverlay').classList.remove('hidden');
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
+                e.preventDefault();
+            }
+
+            if (!isRunning && e.code === 'Space') {
+                startGame();
+                return;
+            }
+
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+            if (e.code === 'ArrowUp' || e.code === 'KeyW') keys.up = true;
+            if (e.code === 'ArrowDown' || e.code === 'KeyS') keys.down = true;
+            if (e.code === 'Space') keys.space = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+            if (e.code === 'ArrowUp' || e.code === 'KeyW') keys.up = false;
+            if (e.code === 'ArrowDown' || e.code === 'KeyS') keys.down = false;
+            if (e.code === 'Space') keys.space = false;
+        });
+
+        // Mobile Touch Listeners
+        const btnLeft = document.getElementById('btnLeft');
+        const btnRight = document.getElementById('btnRight');
+        const btnGas = document.getElementById('btnGas');
+        const btnNitro = document.getElementById('btnNitro');
+
+        btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); keys.left = true; });
+        btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); keys.left = false; });
+
+        btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); keys.right = true; });
+        btnRight.addEventListener('touchend', (e) => { e.preventDefault(); keys.right = false; });
+
+        btnGas.addEventListener('touchstart', (e) => { e.preventDefault(); keys.up = true; });
+        btnGas.addEventListener('touchend', (e) => { e.preventDefault(); keys.up = false; });
+
+        btnNitro.addEventListener('touchstart', (e) => { e.preventDefault(); keys.space = true; });
+        btnNitro.addEventListener('touchend', (e) => { e.preventDefault(); keys.space = false; });
+
+        // Initial Render on Page Load
+        window.onload = () => {
+            lucide.createIcons();
+            drawRoad();
+            player.draw();
+        };
+    </script>
+</body>
+</html>

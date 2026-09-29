@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mahads Repository | Portfolio & Showcase</title>
+    <title>Mahads Repository</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -11,8 +11,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -20,6 +20,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
                         matcha: {
@@ -27,18 +28,13 @@
                             100: '#ebf0e6',
                             200: '#d7e2cc',
                             300: '#bbcea8',
-                            400: '#9cb580',
-                            500: '#7f9c60', // Primary Matcha
+                            400: '#9cb780',
+                            500: '#7f9c60',
                             600: '#647e49',
-                            700: '#4f643a',
+                            700: '#50643b',
                             800: '#415231',
-                            900: '#37442a',
-                            950: '#1c2415', // Dark background
-                        },
-                        darkfoam: {
-                            100: '#1f281b',
-                            200: '#263222',
-                            300: '#2e3d29',
+                            900: '#23301a',
+                            950: '#0e140b',
                         }
                     }
                 }
@@ -46,562 +42,349 @@
         }
     </script>
     <style>
-        /* Smooth scrolling and transitions */
-        html {
-            scroll-behavior: smooth;
-        }
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .matcha-gradient-dark {
+            background: radial-gradient(circle at top right, rgba(127, 156, 96, 0.15), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(35, 48, 26, 0.3), transparent 50%);
         }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #9cb580;
-            border-radius: 9999px;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #4f643a;
+        .matcha-gradient-light {
+            background: radial-gradient(circle at top right, rgba(187, 206, 168, 0.25), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(235, 240, 230, 0.5), transparent 50%);
         }
     </style>
 </head>
-<body class="bg-matcha-50 text-matcha-950 dark:bg-matcha-950 dark:text-matcha-100 min-h-screen flex flex-col antialiased selection:bg-matcha-200 dark:selection:bg-matcha-800">
+<body class="bg-matcha-950 text-matcha-100 dark:bg-matcha-950 dark:text-matcha-100 min-h-screen flex flex-col justify-between transition-colors duration-300 font-sans selection:bg-matcha-500 selection:text-white">
 
-    <header class="sticky top-0 z-40 backdrop-blur-md bg-matcha-50/80 dark:bg-matcha-950/80 border-b border-matcha-200/60 dark:border-matcha-800/60 transition-colors duration-300">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <!-- Brand Logo -->
-            <a href="#" class="flex items-center gap-2.5 group">
-                <div class="w-9 h-9 rounded-xl bg-matcha-500 text-white flex items-center justify-center font-bold text-lg shadow-sm group-hover:bg-matcha-600 transition-colors">
-                    <i data-lucide="leaf" class="w-5 h-5"></i>
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-matcha-950/80 dark:bg-matcha-950/80 border-b border-matcha-800/40 transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            
+            <!-- Brand Logo / Title -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-matcha-500 dark:bg-matcha-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-matcha-500/20 group-hover:scale-105 transition-transform">
+                    <i data-lucide="folder-git-2" class="w-5 h-5"></i>
                 </div>
-                <span class="font-bold text-lg tracking-tight text-matcha-900 dark:text-matcha-100">
-                    Mahads<span class="text-matcha-500 font-normal"> Repository</span>
-                </span>
+                <div>
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-matcha-900 dark:text-matcha-50 flex items-center gap-2">
+                        Mahads Repository
+                    </h1>
+                    <p class="text-xs text-matcha-600 dark:text-matcha-300 font-medium">Personal Project Showcase</p>
+                </div>
             </a>
 
-            <!-- Header Actions -->
+            <!-- Right Controls -->
             <div class="flex items-center gap-3">
-                <!-- Add Project Button -->
-                <button onclick="openAddModal()" class="inline-flex items-center gap-2 px-3.5 py-1.5 text-sm font-medium rounded-xl bg-matcha-500 hover:bg-matcha-600 text-white shadow-sm transition-all duration-200 active:scale-95">
-                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">Add Project</span>
-                </button>
-
-                <!-- Theme Switcher -->
-                <button id="themeToggle" onclick="toggleTheme()" class="p-2 rounded-xl bg-matcha-100 dark:bg-darkfoam-200 text-matcha-800 dark:text-matcha-200 hover:bg-matcha-200 dark:hover:bg-darkfoam-300 transition-colors" title="Toggle theme">
-                    <i id="sunIcon" data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
-                    <i id="moonIcon" data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                <!-- Dark / Light Theme Toggle -->
+                <button id="themeToggleBtn" title="Toggle Theme" class="p-2.5 rounded-xl border border-matcha-800/60 text-matcha-300 hover:text-white hover:bg-matcha-900 transition-all">
+                    <i id="themeIconSun" data-lucide="sun" class="w-5 h-5 hidden"></i>
+                    <i id="themeIconMoon" data-lucide="moon" class="w-5 h-5"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-10 flex flex-col gap-10">
+        
         <!-- Hero Section -->
-        <section class="mb-14 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-8 bg-matcha-100/50 dark:bg-darkfoam-100/50 p-8 sm:p-10 rounded-3xl border border-matcha-200/50 dark:border-matcha-800/40">
-            <div class="max-w-2xl space-y-4">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-matcha-200/60 dark:bg-matcha-900/60 text-matcha-800 dark:text-matcha-200 text-xs font-semibold tracking-wide">
-                    <span class="w-2 h-2 rounded-full bg-matcha-500 animate-pulse"></span>
-                    CREATIVE DEVELOPER & DESIGNER
-                </div>
-                <h1 class="text-3xl sm:text-5xl font-extrabold text-matcha-950 dark:text-matcha-50 tracking-tight">
-                    Mahads Repository
-                </h1>
-                <p class="text-matcha-700 dark:text-matcha-300 text-base sm:text-lg leading-relaxed font-normal">
-                    hello my name is Mahad this is my website where you can view my projects
-                </p>
-                <div class="pt-2 flex flex-wrap justify-center sm:justify-start gap-3 text-sm font-medium">
-                    <a href="#projects" class="px-5 py-2.5 rounded-xl bg-matcha-900 text-matcha-50 dark:bg-matcha-200 dark:text-matcha-950 hover:opacity-90 transition-opacity">
-                        Explore Work
-                    </a>
-                    <a href="https://github.com" target="_blank" rel="noopener" class="px-5 py-2.5 rounded-xl bg-matcha-200/60 dark:bg-darkfoam-200 text-matcha-800 dark:text-matcha-200 hover:bg-matcha-200 dark:hover:bg-darkfoam-300 transition-colors flex items-center gap-2">
-                        <i data-lucide="github" class="w-4 h-4"></i>
-                        GitHub
-                    </a>
-                </div>
+        <section class="text-center py-6 sm:py-10 max-w-2xl mx-auto space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-matcha-800/40 border border-matcha-700/50 text-matcha-300 text-xs font-semibold uppercase tracking-wider">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-matcha-400"></i>
+                Welcome
             </div>
+            <h2 class="text-3xl sm:text-5xl font-black text-matcha-900 dark:text-white tracking-tight leading-tight">
+                Mahads Repository
+            </h2>
+            <p class="text-base sm:text-lg text-matcha-600 dark:text-matcha-300 font-normal leading-relaxed">
+                hello my name is Mahad this is my website where you can view my projects
+            </p>
+        </section>
+
+        <!-- Controls Bar: Category Filters & Search -->
+        <section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-2 border-b border-matcha-800/40">
             
-            <!-- Aesthetic Matcha Badge / Mascot illustration -->
-            <div class="relative flex-shrink-0">
-                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-matcha-200 dark:bg-matcha-900 flex items-center justify-center p-4 border-4 border-matcha-300/40 dark:border-matcha-700/40 shadow-inner">
-                    <i data-lucide="gamepad-2" class="w-16 h-16 sm:w-20 sm:h-20 text-matcha-600 dark:text-matcha-400"></i>
-                </div>
-                <div class="absolute -bottom-2 -right-2 bg-matcha-500 text-white p-2.5 rounded-2xl shadow-md">
-                    <i data-lucide="code-2" class="w-5 h-5"></i>
-                </div>
+            <!-- Category Filter Tabs -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-2 sm:pb-0 scrollbar-none" id="categoryFilterContainer">
+                <button data-category="All" class="category-btn active px-4 py-2 rounded-xl text-xs font-bold transition-all bg-matcha-500 text-white shadow-md shadow-matcha-500/20">
+                    All
+                </button>
+                <button data-category="Apps" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-300 hover:text-white hover:bg-matcha-900">
+                    Apps
+                </button>
+                <button data-category="Games" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-300 hover:text-white hover:bg-matcha-900">
+                    Games
+                </button>
+                <button data-category="Web" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-300 hover:text-white hover:bg-matcha-900">
+                    Web
+                </button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="relative min-w-[240px]">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-matcha-400 pointer-events-none"></i>
+                <input id="searchInput" type="text" placeholder="Search projects..." class="w-full pl-10 pr-4 py-2 rounded-xl text-xs bg-matcha-900/60 border border-matcha-800/80 text-white placeholder-matcha-400/60 focus:outline-none focus:border-matcha-500 transition-colors">
             </div>
         </section>
 
-        <section id="projects" class="space-y-6">
-            <!-- Section Header & Filters -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
-                <div>
-                    <h2 class="text-2xl font-bold tracking-tight text-matcha-950 dark:text-matcha-100">
-                        Featured Projects
-                    </h2>
-                    <p class="text-sm text-matcha-600 dark:text-matcha-400">Filter through apps, games, and experimentations.</p>
-                </div>
-
-                <!-- Filters & Search Toolbar -->
-                <div class="flex flex-wrap items-center gap-3">
-                    <!-- Search Input -->
-                    <div class="relative min-w-[200px] flex-1 sm:flex-initial">
-                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-matcha-500"></i>
-                        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search project..." class="w-full pl-9 pr-4 py-2 text-sm rounded-xl bg-matcha-100/80 dark:bg-darkfoam-200 border border-matcha-200 dark:border-matcha-800 text-matcha-900 dark:text-matcha-100 focus:outline-none focus:ring-2 focus:ring-matcha-500 transition-all">
-                    </div>
-
-                    <!-- Category Pills -->
-                    <div class="flex items-center gap-1 p-1 bg-matcha-100/80 dark:bg-darkfoam-200 rounded-xl border border-matcha-200/80 dark:border-matcha-800/80">
-                        <button onclick="setFilter('all')" data-filter="all" class="filter-btn active-filter px-3 py-1.5 text-xs font-medium rounded-lg transition-all">All</button>
-                        <button onclick="setFilter('app')" data-filter="app" class="filter-btn px-3 py-1.5 text-xs font-medium rounded-lg text-matcha-700 dark:text-matcha-300 hover:text-matcha-950 dark:hover:text-white transition-all">Apps</button>
-                        <button onclick="setFilter('game')" data-filter="game" class="filter-btn px-3 py-1.5 text-xs font-medium rounded-lg text-matcha-700 dark:text-matcha-300 hover:text-matcha-950 dark:hover:text-white transition-all">Games</button>
-                        <button onclick="setFilter('web')" data-filter="web" class="filter-btn px-3 py-1.5 text-xs font-medium rounded-lg text-matcha-700 dark:text-matcha-300 hover:text-matcha-950 dark:hover:text-white transition-all">Web</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="projectGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Cards will be populated dynamically by JavaScript -->
-            </div>
-
-            <!-- Empty State -->
-            <div id="emptyState" class="hidden text-center py-16 space-y-3">
-                <div class="w-16 h-16 mx-auto rounded-full bg-matcha-100 dark:bg-darkfoam-200 flex items-center justify-center text-matcha-500">
-                    <i data-lucide="folder-open" class="w-8 h-8"></i>
-                </div>
-                <h3 class="text-lg font-medium text-matcha-900 dark:text-matcha-100">No projects found</h3>
-                <p class="text-sm text-matcha-600 dark:text-matcha-400 max-w-sm mx-auto">Try adjusting your search terms or filter to find what you're looking for.</p>
-            </div>
+        <!-- Project Cards Grid -->
+        <section id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic JavaScript Content Here -->
         </section>
+
+        <!-- Empty State Container -->
+        <section id="emptyState" class="hidden flex-col items-center justify-center text-center py-20 px-4 border-2 border-dashed border-matcha-800/50 rounded-3xl bg-matcha-900/20">
+            <div class="w-16 h-16 rounded-2xl bg-matcha-800/40 text-matcha-300 flex items-center justify-center mb-4">
+                <i data-lucide="folder-open" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-1">No Projects Found</h3>
+            <p class="text-xs text-matcha-300 max-w-sm">No projects match your search or filter. You can add your projects directly in the code array!</p>
+        </section>
+
     </main>
 
-    <footer class="mt-auto border-t border-matcha-200/60 dark:border-matcha-800/60 py-8 bg-matcha-100/30 dark:bg-darkfoam-100/30 text-xs text-matcha-600 dark:text-matcha-400">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <i data-lucide="cup-soda" class="w-4 h-4 text-matcha-500"></i>
-                <span>Designed with matcha simplicity © 2026</span>
-            </div>
-            <div class="flex items-center gap-4">
-                <a href="#" class="hover:text-matcha-900 dark:hover:text-matcha-200 transition-colors">Privacy</a>
-                <a href="#" class="hover:text-matcha-900 dark:hover:text-matcha-200 transition-colors">Terms</a>
-                <a href="#top" class="hover:text-matcha-900 dark:hover:text-matcha-200 transition-colors flex items-center gap-1">
-                    Back to top <i data-lucide="arrow-up" class="w-3 h-3"></i>
-                </a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Project Details Modal -->
-    <div id="detailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
-        <div class="bg-matcha-50 dark:bg-darkfoam-100 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-matcha-200 dark:border-matcha-800 shadow-2xl p-6 sm:p-8 relative space-y-6">
-            <!-- Close Button -->
-            <button onclick="closeDetailModal()" class="absolute top-6 right-6 p-2 rounded-full bg-matcha-100 dark:bg-darkfoam-200 text-matcha-700 dark:text-matcha-300 hover:bg-matcha-200 transition-colors">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-
-            <!-- Modal Header -->
-            <div class="flex items-start gap-4 pr-8">
-                <div id="modalIconContainer" class="w-14 h-14 rounded-2xl bg-matcha-200 dark:bg-matcha-900 flex items-center justify-center text-matcha-700 dark:text-matcha-300 flex-shrink-0 text-2xl">
-                    🍵
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span id="modalCategoryBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-matcha-200 dark:bg-matcha-900 text-matcha-800 dark:text-matcha-200">
-                            Category
-                        </span>
+    <!-- Project Detail Modal -->
+    <div id="projectModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="relative w-full max-w-xl bg-matcha-900 border border-matcha-800 rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
+            <div class="p-6 overflow-y-auto space-y-4">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <span id="modalCategory" class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-matcha-800 text-matcha-300">Category</span>
+                        <h3 id="modalTitle" class="text-2xl font-bold text-white mt-2">Project Title</h3>
                     </div>
-                    <h3 id="modalTitle" class="text-2xl font-bold text-matcha-950 dark:text-matcha-50 mt-1">
-                        Project Title
-                    </h3>
+                    <button id="closeModalBtn" class="p-2 text-matcha-400 hover:text-white rounded-xl hover:bg-matcha-800/60 transition-colors">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
-            </div>
-
-            <!-- Banner / Image Preview -->
-            <div class="aspect-video w-full rounded-2xl overflow-hidden bg-matcha-200/50 dark:bg-darkfoam-200 flex items-center justify-center border border-matcha-200 dark:border-matcha-800 relative">
-                <img id="modalImage" src="" alt="Project Preview" class="w-full h-full object-cover hidden" onerror="this.classList.add('hidden')">
-                <div id="modalImageFallback" class="flex flex-col items-center gap-2 text-matcha-500">
-                    <i data-lucide="monitor" class="w-10 h-10"></i>
-                    <span class="text-xs">Live Interactive Preview / Screenshot</span>
-                </div>
-            </div>
-
-            <!-- Description -->
-            <div class="space-y-2">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-matcha-500">About the project</h4>
-                <p id="modalDescription" class="text-matcha-800 dark:text-matcha-200 text-sm leading-relaxed">
-                    Description goes here...
-                </p>
-            </div>
-
-            <!-- Tags -->
-            <div class="space-y-2">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-matcha-500">Technologies</h4>
-                <div id="modalTags" class="flex flex-wrap gap-2">
+                <p id="modalDescription" class="text-xs text-matcha-200 leading-relaxed">Description...</p>
+                
+                <div id="modalTags" class="flex flex-wrap gap-1.5 pt-2">
                     <!-- Dynamic Tags -->
                 </div>
             </div>
 
-            <!-- Modal Actions -->
-            <div class="pt-4 border-t border-matcha-200 dark:border-matcha-800 flex flex-wrap items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                    <a id="modalDemoLink" href="#" target="_blank" rel="noopener" class="px-5 py-2.5 rounded-xl bg-matcha-500 hover:bg-matcha-600 text-white text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
-                        <i data-lucide="external-link" class="w-4 h-4"></i> Launch App/Game
-                    </a>
-                    <a id="modalSourceLink" href="#" target="_blank" rel="noopener" class="px-4 py-2.5 rounded-xl bg-matcha-100 dark:bg-darkfoam-200 text-matcha-800 dark:text-matcha-200 hover:bg-matcha-200 dark:hover:bg-darkfoam-300 text-sm font-medium flex items-center gap-2 transition-colors">
-                        <i data-lucide="github" class="w-4 h-4"></i> Code
-                    </a>
-                </div>
-                <button id="modalDeleteBtn" onclick="deleteCurrentProject()" class="text-xs text-red-500 hover:text-red-600 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
-                    Delete Project
-                </button>
+            <div class="p-4 bg-matcha-950 border-t border-matcha-800 flex items-center justify-end gap-3">
+                <a id="modalCodeLink" href="#" target="_blank" class="hidden px-4 py-2 rounded-xl text-xs font-semibold bg-matcha-800 hover:bg-matcha-700 text-white transition-colors items-center gap-1.5">
+                    <i data-lucide="github" class="w-4 h-4"></i> View Code
+                </a>
+                <a id="modalLiveLink" href="#" target="_blank" class="px-4 py-2 rounded-xl text-xs font-semibold bg-matcha-500 hover:bg-matcha-600 text-white transition-colors flex items-center gap-1.5 shadow-md shadow-matcha-500/20">
+                    <i data-lucide="external-link" class="w-4 h-4"></i> Launch Live
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Add Project Modal -->
-    <div id="addModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
-        <div class="bg-matcha-50 dark:bg-darkfoam-100 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-matcha-200 dark:border-matcha-800 shadow-2xl p-6 sm:p-8 relative space-y-5">
-            <!-- Close Button -->
-            <button onclick="closeAddModal()" class="absolute top-6 right-6 p-2 rounded-full bg-matcha-100 dark:bg-darkfoam-200 text-matcha-700 dark:text-matcha-300 hover:bg-matcha-200 transition-colors">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-
-            <div class="space-y-1">
-                <h3 class="text-xl font-bold text-matcha-950 dark:text-matcha-50">Add New Project</h3>
-                <p class="text-xs text-matcha-600 dark:text-matcha-400">Add an app, game, or tool to your matcha showcase page.</p>
-            </div>
-
-            <form id="addProjectForm" onsubmit="saveNewProject(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-matcha-800 dark:text-matcha-200 mb-1">Title *</label>
-                    <input type="text" id="addTitle" required placeholder="e.g. Zen Matcha Timer" class="w-full px-3.5 py-2 text-sm rounded-xl bg-white dark:bg-darkfoam-200 border border-matcha-200 dark:border-matcha-800 text-matcha-900 dark:text-matcha-100 focus:outline-none focus:ring-2 focus:ring-matcha-500">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-matcha-800 dark:text-matcha-200 mb-1">Category *</label>
-                        <select id="addCategory" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-white dark:bg-darkfoam-200 border border-matcha-200 dark:border-matcha-800 text-matcha-900 dark:text-matcha-100 focus:outline-none focus:ring-2 focus:ring-matcha-500">
-                            <option value="app">App</option>
-                            <option value="game">Game</option>
-                            <option value="web">Web Tool</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-matcha-800 dark:text-matcha-200 mb-1">Emoji Icon</label>
-                        <input type="text" id="addEmoji" placeholder="🍵 or 🎮" class="w-full px-3.5 py-2 text-sm rounded-xl bg-white dark:bg-darkfoam-200 border border-matcha-200 dark:border-matcha-800 text-matcha-900 dark:text-matcha-100 focus:outline-none focus:ring-2 focus:ring-matcha-500">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-matcha-800 dark:text-matcha-200 mb-1">Description *</label>
-                    <textarea id="addDescription" rows="3" required placeholder="Briefly describe what your app or game does..." class="w-full px-3.5 py-2 text-sm rounded-xl bg-white dark:bg-darkfoam-200 border border-matcha-200 dark:border-matcha-800 text-matcha-900 dark:text-matcha-100 focus:outline-none focus:ring-2 focus:ring-matcha-500 resize-none"></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-matcha-800 dark:text-matcha-200 mb-1">Technologies (comma separated)</label>
-                    <input type="text" id="addTags" placeholder="React, Tailwind, Three.js" class="w-full px-3.5 py-2 text-sm rounded-xl bg-white dark:bg-darkfoam-200 border border-matcha-200 dark:border-matcha-800 text-matcha-900 dark:text-matcha-100 focus:outline-none focus:ring-2 focus:ring-matcha-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-matcha-800 dark:text-matcha-200 mb-1">Live Demo / Game URL</label>
-                    <input type="url" id="addDemoUrl" placeholder="https://mygame.example.com" class="w-full px-3.5 py-2 text-sm rounded-xl bg-white dark:bg-darkfoam-200 border border-matcha-200 dark:border-matcha-800 text-matcha-900 dark:text-matcha-100 focus:outline-none focus:ring-2 focus:ring-matcha-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-matcha-800 dark:text-matcha-200 mb-1">Image / Thumbnail URL (optional)</label>
-                    <input type="url" id="addImageUrl" placeholder="https://images.unsplash.com/photo-..." class="w-full px-3.5 py-2 text-sm rounded-xl bg-white dark:bg-darkfoam-200 border border-matcha-200 dark:border-matcha-800 text-matcha-900 dark:text-matcha-100 focus:outline-none focus:ring-2 focus:ring-matcha-500">
-                </div>
-
-                <div class="pt-2 flex justify-end gap-3">
-                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 text-sm font-medium rounded-xl text-matcha-700 dark:text-matcha-300 hover:bg-matcha-100 dark:hover:bg-darkfoam-200 transition-colors">Cancel</button>
-                    <button type="submit" class="px-5 py-2 text-sm font-medium rounded-xl bg-matcha-500 hover:bg-matcha-600 text-white shadow-sm transition-colors">Save Project</button>
-                </div>
-            </form>
+    <!-- Footer -->
+    <footer class="w-full border-t border-matcha-800/40 py-6 text-center text-xs text-matcha-400">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>&copy; 2026 Mahads Repository. Built with simplicity.</p>
+            <p class="flex items-center gap-1 text-matcha-400">
+                Crafted in Matcha Green
+            </p>
         </div>
-    </div>
-
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-matcha-900 text-matcha-50 dark:bg-matcha-200 dark:text-matcha-950 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 text-sm font-medium">
-        <i data-lucide="check-circle-2" class="w-4 h-4 text-matcha-400 dark:text-matcha-700"></i>
-        <span id="toastMessage">Action completed!</span>
-    </div>
+    </footer>
 
     <script>
-        // Default Projects (Empty - Ready for Mahad to add projects)
-        const initialProjects = [];
+        /* 
+         * ==========================================
+         * MAHAD'S PROJECT REPOSITORY DATA
+         * ==========================================
+         * Add your projects manually here! Simply copy and paste 
+         * the template object below to add a new project card.
+         *
+         * Template:
+         * {
+         *     id: '1',
+         *     title: 'My Game Title',
+         *     category: 'Games', // Options: 'Apps', 'Games', or 'Web'
+         *     description: 'A quick explanation of what your project does.',
+         *     tags: ['HTML5', 'Canvas', 'JavaScript'],
+         *     liveUrl: 'racing.html', // Or full link like 'https://...'
+         *     codeUrl: 'https://github.com/your-username/repo' // (Optional)
+         * }
+         */
+        const myProjects = [
+        {
+            id: 'matcha-racer',
+            title: 'Matcha Racer',
+            category: 'Games',
+            description: 'A top-down 2D arcade racing game with nitro boosts, dynamic traffic, drift mechanics, and sound FX.',
+            tags: ['HTML5', 'Canvas', 'JavaScript', 'Web Audio'],
+            liveUrl: 'racing.html',
+            codeUrl: ''
+        }
+        ];
 
-        // State Management
-        let projects = [];
-        let currentFilter = 'all';
-        let activeModalProjectId = null;
+        // App State
+        let currentCategory = 'All';
+        let searchQuery = '';
 
-        // Initialize App
-        window.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            loadProjects();
-            renderProjects();
-            lucide.createIcons();
+        // DOM Elements
+        const projectsGrid = document.getElementById('projectsGrid');
+        const emptyState = document.getElementById('emptyState');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilterContainer = document.getElementById('categoryFilterContainer');
+        
+        // Modal Elements
+        const projectModal = document.getElementById('projectModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalCategory = document.getElementById('modalCategory');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalTags = document.getElementById('modalTags');
+        const modalLiveLink = document.getElementById('modalLiveLink');
+        const modalCodeLink = document.getElementById('modalCodeLink');
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIconSun = document.getElementById('themeIconSun');
+        const themeIconMoon = document.getElementById('themeIconMoon');
+
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            themeIconSun.classList.toggle('hidden', !isDark);
+            themeIconMoon.classList.toggle('hidden', isDark);
+            localStorage.setItem('matcha_theme', isDark ? 'dark' : 'light');
         });
 
-        // Theme Handling
-        function initTheme() {
-            const savedTheme = localStorage.getItem('matcha_theme');
-            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
+        // Load Saved Theme
+        if (localStorage.getItem('matcha_theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+            themeIconSun.classList.remove('hidden');
+            themeIconMoon.classList.add('hidden');
         }
 
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('matcha_theme', isDark ? 'dark' : 'light');
-            showToast(isDark ? 'Switched to Matcha Dark Mode 🌙' : 'Switched to Matcha Foam Light Mode ☀️');
-        }
-
-        // Project State Handling
-        function loadProjects() {
-            const stored = localStorage.getItem('matcha_projects');
-            if (stored) {
-                try {
-                    projects = JSON.parse(stored);
-                } catch (e) {
-                    projects = [];
-                }
-            } else {
-                projects = [];
-                saveProjectsToStorage();
-            }
-        }
-
-        function saveProjectsToStorage() {
-            localStorage.setItem('matcha_projects', JSON.stringify(projects));
-        }
-
-        // Filtering & Search
-        function setFilter(filter) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                if (btn.dataset.filter === filter) {
-                    btn.classList.add('bg-matcha-500', 'text-white', 'shadow-sm');
-                    btn.classList.remove('text-matcha-700', 'dark:text-matcha-300');
-                } else {
-                    btn.classList.remove('bg-matcha-500', 'text-white', 'shadow-sm');
-                    btn.classList.add('text-matcha-700', 'dark:text-matcha-300');
-                }
-            });
-            renderProjects();
-        }
-
-        function handleSearch() {
-            renderProjects();
-        }
-
-        // Render Cards Grid
+        // Render Projects
         function renderProjects() {
-            const grid = document.getElementById('projectGrid');
-            const emptyState = document.getElementById('emptyState');
-            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
-
-            const filtered = projects.filter(p => {
-                const matchesFilter = currentFilter === 'all' || p.category === currentFilter;
-                const matchesSearch = p.title.toLowerCase().includes(searchVal) || 
-                                      p.description.toLowerCase().includes(searchVal) ||
-                                      (p.tags && p.tags.some(t => t.toLowerCase().includes(searchVal)));
-                return matchesFilter && matchesSearch;
+            const filtered = myProjects.filter(p => {
+                const matchesCategory = currentCategory === 'All' || p.category.toLowerCase() === currentCategory.toLowerCase();
+                const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      p.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+                return matchesCategory && matchesSearch;
             });
-
-            grid.innerHTML = '';
 
             if (filtered.length === 0) {
+                projectsGrid.innerHTML = '';
                 emptyState.classList.remove('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-                filtered.forEach(project => {
-                    grid.appendChild(createProjectCard(project));
-                });
+                emptyState.classList.add('flex');
+                return;
             }
 
-            lucide.createIcons();
-        }
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
 
-        // Create Project Card Element
-        function createProjectCard(project) {
-            const card = document.createElement('div');
-            card.className = "group relative bg-white dark:bg-darkfoam-100 rounded-2xl border border-matcha-200/80 dark:border-matcha-800/60 p-5 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 cursor-pointer";
-            
-            const badgeColors = {
-                app: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300',
-                game: 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300',
-                web: 'bg-sky-100 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300'
-            };
+            projectsGrid.innerHTML = filtered.map(p => `
+                <div class="group bg-matcha-900/40 hover:bg-matcha-900/80 border border-matcha-800/80 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-matcha-500/5 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-matcha-800/80 text-matcha-300">
+                                ${p.category}
+                            </span>
+                        </div>
 
-            card.innerHTML = `
-                <div onclick="openDetailModal('${project.id}')" class="space-y-4">
-                    <!-- Top row: Icon & Category badge -->
-                    <div class="flex items-center justify-between">
-                        <span class="text-3xl p-2 rounded-xl bg-matcha-100 dark:bg-darkfoam-200 inline-block">
-                            ${project.emoji || '🍵'}
-                        </span>
-                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${badgeColors[project.category] || 'bg-matcha-100 text-matcha-800'}">
-                            ${project.category.toUpperCase()}
-                        </span>
-                    </div>
-
-                    <!-- Title & Description -->
-                    <div>
-                        <h3 class="text-lg font-bold text-matcha-950 dark:text-matcha-50 group-hover:text-matcha-600 dark:group-hover:text-matcha-400 transition-colors">
-                            ${escapeHtml(project.title)}
+                        <h3 class="text-lg font-bold text-white group-hover:text-matcha-300 transition-colors">
+                            ${p.title}
                         </h3>
-                        <p class="text-xs text-matcha-700 dark:text-matcha-300 mt-1.5 line-clamp-2 leading-relaxed">
-                            ${escapeHtml(project.description)}
+
+                        <p class="text-xs text-matcha-300 line-clamp-3 leading-relaxed">
+                            ${p.description}
                         </p>
                     </div>
 
-                    <!-- Tags -->
-                    <div class="flex flex-wrap gap-1.5 pt-1">
-                        ${(project.tags || []).map(tag => `
-                            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-matcha-100/70 dark:bg-darkfoam-200 text-matcha-700 dark:text-matcha-300">
-                                ${escapeHtml(tag)}
-                            </span>
-                        `).join('')}
+                    <div class="pt-4 mt-4 border-t border-matcha-800/40 flex items-center justify-between">
+                        <div class="flex flex-wrap gap-1 max-w-[70%]">
+                            ${p.tags.slice(0, 3).map(t => `<span class="text-[10px] text-matcha-400 font-mono">#${t}</span>`).join(' ')}
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="openModal('${p.id}')" class="p-2 rounded-xl text-matcha-300 hover:text-white hover:bg-matcha-800 transition-colors" title="Details">
+                                <i data-lucide="info" class="w-4 h-4"></i>
+                            </button>
+                            ${p.liveUrl ? `
+                                <a href="${p.liveUrl}" target="_blank" class="p-2 rounded-xl bg-matcha-500 hover:bg-matcha-600 text-white transition-colors" title="Launch">
+                                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                                </a>
+                            ` : ''}
+                        </div>
                     </div>
                 </div>
-
-                <!-- Footer Link Actions -->
-                <div class="mt-5 pt-3 border-t border-matcha-100 dark:border-matcha-800/50 flex items-center justify-between text-xs font-medium">
-                    <button onclick="openDetailModal('${project.id}')" class="text-matcha-600 dark:text-matcha-400 hover:text-matcha-900 dark:hover:text-matcha-100 flex items-center gap-1">
-                        View Details <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                    </button>
-                    ${project.demoUrl ? `
-                        <a href="${project.demoUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="p-1.5 rounded-lg bg-matcha-100 hover:bg-matcha-200 dark:bg-darkfoam-200 dark:hover:bg-darkfoam-300 text-matcha-800 dark:text-matcha-200 transition-colors" title="Launch Demo">
-                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                        </a>
-                    ` : ''}
-                </div>
-            `;
-            return card;
-        }
-
-        // Modal Operations
-        function openDetailModal(id) {
-            const project = projects.find(p => p.id === id);
-            if (!project) return;
-
-            activeModalProjectId = id;
-            document.getElementById('modalTitle').textContent = project.title;
-            document.getElementById('modalCategoryBadge').textContent = project.category.toUpperCase();
-            document.getElementById('modalDescription').textContent = project.description;
-            document.getElementById('modalIconContainer').textContent = project.emoji || '🍵';
-            
-            // Image setup
-            const img = document.getElementById('modalImage');
-            const imgFallback = document.getElementById('modalImageFallback');
-            if (project.imageUrl) {
-                img.src = project.imageUrl;
-                img.classList.remove('hidden');
-                imgFallback.classList.add('hidden');
-            } else {
-                img.classList.add('hidden');
-                imgFallback.classList.remove('hidden');
-            }
-
-            // Tags
-            const tagsContainer = document.getElementById('modalTags');
-            tagsContainer.innerHTML = (project.tags || []).map(t => `
-                <span class="text-xs font-medium px-2.5 py-1 rounded-lg bg-matcha-200/60 dark:bg-darkfoam-200 text-matcha-800 dark:text-matcha-200">
-                    ${escapeHtml(t)}
-                </span>
             `).join('');
 
-            // Action Links
-            document.getElementById('modalDemoLink').href = project.demoUrl || '#';
-            document.getElementById('modalSourceLink').href = project.githubUrl || '#';
-
-            document.getElementById('detailModal').classList.remove('hidden');
             lucide.createIcons();
         }
 
-        function closeDetailModal() {
-            document.getElementById('detailModal').classList.add('hidden');
-            activeModalProjectId = null;
-        }
+        // Category Filter Event
+        categoryFilterContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-btn')) {
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('bg-matcha-500', 'text-white', 'shadow-md', 'shadow-matcha-500/20');
+                    btn.classList.add('text-matcha-300');
+                });
+                e.target.classList.add('bg-matcha-500', 'text-white', 'shadow-md', 'shadow-matcha-500/20');
+                e.target.classList.remove('text-matcha-300');
+                currentCategory = e.target.dataset.category;
+                renderProjects();
+            }
+        });
 
-        function openAddModal() {
-            document.getElementById('addModal').classList.remove('hidden');
-        }
-
-        function closeAddModal() {
-            document.getElementById('addModal').classList.add('hidden');
-            document.getElementById('addProjectForm').reset();
-        }
-
-        function saveNewProject(e) {
-            e.preventDefault();
-            const title = document.getElementById('addTitle').value.trim();
-            const category = document.getElementById('addCategory').value;
-            const emoji = document.getElementById('addEmoji').value.trim() || '🍵';
-            const description = document.getElementById('addDescription').value.trim();
-            const tagsRaw = document.getElementById('addTags').value;
-            const demoUrl = document.getElementById('addDemoUrl').value.trim();
-            const imageUrl = document.getElementById('addImageUrl').value.trim();
-
-            const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
-
-            const newProject = {
-                id: Date.now().toString(),
-                title,
-                category,
-                emoji,
-                description,
-                tags,
-                demoUrl,
-                githubUrl: '#',
-                imageUrl
-            };
-
-            projects.unshift(newProject);
-            saveProjectsToStorage();
+        // Search Event
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
             renderProjects();
-            closeAddModal();
-            showToast('New project added successfully! 🎉');
+        });
+
+        // Modal Handlers
+        window.openModal = function(id) {
+            const project = myProjects.find(p => p.id === id);
+            if (!project) return;
+
+            modalTitle.textContent = project.title;
+            modalCategory.textContent = project.category;
+            modalDescription.textContent = project.description;
+            
+            modalTags.innerHTML = project.tags.map(t => `
+                <span class="text-xs px-2.5 py-1 rounded-lg bg-matcha-800 text-matcha-200 font-mono">#${t}</span>
+            `).join('');
+
+            if (project.liveUrl) {
+                modalLiveLink.href = project.liveUrl;
+                modalLiveLink.classList.remove('hidden');
+                modalLiveLink.classList.add('flex');
+            } else {
+                modalLiveLink.classList.add('hidden');
+            }
+
+            if (project.codeUrl) {
+                modalCodeLink.href = project.codeUrl;
+                modalCodeLink.classList.remove('hidden');
+                modalCodeLink.classList.add('flex');
+            } else {
+                modalCodeLink.classList.add('hidden');
+            }
+
+            projectModal.classList.remove('opacity-0', 'pointer-events-none');
+            projectModal.querySelector('div').classList.remove('scale-95');
+            projectModal.querySelector('div').classList.add('scale-100');
+        };
+
+        function closeModal() {
+            projectModal.classList.add('opacity-0', 'pointer-events-none');
+            projectModal.querySelector('div').classList.remove('scale-100');
+            projectModal.querySelector('div').classList.add('scale-95');
         }
 
-        function deleteCurrentProject() {
-            if (!activeModalProjectId) return;
-            projects = projects.filter(p => p.id !== activeModalProjectId);
-            saveProjectsToStorage();
+        closeModalBtn.addEventListener('click', closeModal);
+        projectModal.addEventListener('click', (e) => {
+            if (e.target === projectModal) closeModal();
+        });
+
+        // Initial Render
+        window.onload = () => {
+            lucide.createIcons();
             renderProjects();
-            closeDetailModal();
-            showToast('Project deleted.');
-        }
-
-        // Helper Utility Functions
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMessage').textContent = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/&/g, "&amp;")
-                      .replace(/</g, "&lt;")
-                      .replace(/>/g, "&gt;")
-                      .replace(/"/g, "&quot;")
-                      .replace(/'/g, "&#039;");
-        }
+        };
     </script>
 </body>
 </html>

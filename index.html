@@ -11,7 +11,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -35,6 +35,15 @@
                             800: '#415231',
                             900: '#23301a',
                             950: '#0e140b',
+                        },
+                        cream: {
+                            50: '#fdfbf7',
+                            100: '#f8f4eb',
+                            200: '#f0e8d8',
+                            300: '#e5d7be',
+                            400: '#d4bf9c',
+                            800: '#3e3527',
+                            900: '#241e15',
                         }
                     }
                 }
@@ -45,43 +54,36 @@
         body {
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .matcha-gradient-dark {
-            background: radial-gradient(circle at top right, rgba(127, 156, 96, 0.15), transparent 40%),
-                        radial-gradient(circle at bottom left, rgba(35, 48, 26, 0.3), transparent 50%);
-        }
-        .matcha-gradient-light {
-            background: radial-gradient(circle at top right, rgba(187, 206, 168, 0.25), transparent 40%),
-                        radial-gradient(circle at bottom left, rgba(235, 240, 230, 0.5), transparent 50%);
+        .matcha-glow {
+            box-shadow: 0 0 25px -5px rgba(127, 156, 96, 0.25);
         }
     </style>
 </head>
-<body class="bg-matcha-950 text-matcha-100 dark:bg-matcha-950 dark:text-matcha-100 min-h-screen flex flex-col justify-between transition-colors duration-300 font-sans selection:bg-matcha-500 selection:text-white">
+<body class="bg-cream-50 text-matcha-950 dark:bg-matcha-950 dark:text-matcha-100 min-h-screen flex flex-col justify-between transition-colors duration-300 font-sans selection:bg-matcha-500 selection:text-white">
 
-    <!-- Header / Navigation -->
-    <header class="sticky top-0 z-40 backdrop-blur-md bg-matcha-950/80 dark:bg-matcha-950/80 border-b border-matcha-800/40 transition-colors duration-300">
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-cream-50/80 dark:bg-matcha-950/80 border-b border-cream-200 dark:border-matcha-800/40 transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
             
-            <!-- Brand Logo / Title -->
+            <!-- Brand Logo -->
             <a href="#" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 rounded-xl bg-matcha-500 dark:bg-matcha-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-matcha-500/20 group-hover:scale-105 transition-transform">
+                <div class="relative w-10 h-10 rounded-xl bg-matcha-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-matcha-500/20 group-hover:scale-105 transition-transform">
                     <i data-lucide="folder-git-2" class="w-5 h-5"></i>
+                    <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-matcha-300 border-2 border-cream-50 dark:border-matcha-950 animate-pulse"></span>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-matcha-900 dark:text-matcha-50 flex items-center gap-2">
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-cream-900 dark:text-matcha-50 flex items-center gap-2">
                         Mahads Repository
                     </h1>
                     <p class="text-xs text-matcha-600 dark:text-matcha-300 font-medium">Personal Project Showcase</p>
                 </div>
             </a>
 
-            <!-- Right Controls -->
-            <div class="flex items-center gap-3">
-                <!-- Dark / Light Theme Toggle -->
-                <button id="themeToggleBtn" title="Toggle Theme" class="p-2.5 rounded-xl border border-matcha-800/60 text-matcha-300 hover:text-white hover:bg-matcha-900 transition-all">
-                    <i id="themeIconSun" data-lucide="sun" class="w-5 h-5 hidden"></i>
-                    <i id="themeIconMoon" data-lucide="moon" class="w-5 h-5"></i>
-                </button>
-            </div>
+            <!-- Theme Toggle Button -->
+            <button id="themeToggleBtn" title="Toggle Theme" class="p-2.5 rounded-xl border border-cream-300 dark:border-matcha-800/60 text-matcha-700 dark:text-matcha-300 hover:text-matcha-900 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-matcha-900 transition-all">
+                <i id="themeIconSun" data-lucide="sun" class="w-5 h-5 hidden"></i>
+                <i id="themeIconMoon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
         </div>
     </header>
 
@@ -90,134 +92,97 @@
         
         <!-- Hero Section -->
         <section class="text-center py-6 sm:py-10 max-w-2xl mx-auto space-y-4">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-matcha-800/40 border border-matcha-700/50 text-matcha-300 text-xs font-semibold uppercase tracking-wider">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-matcha-400"></i>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-matcha-100 dark:bg-matcha-800/40 border border-matcha-200 dark:border-matcha-700/50 text-matcha-700 dark:text-matcha-300 text-xs font-semibold uppercase tracking-wider">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-matcha-500 dark:text-matcha-400"></i>
                 Welcome
             </div>
-            <h2 class="text-3xl sm:text-5xl font-black text-matcha-900 dark:text-white tracking-tight leading-tight">
+            <h2 class="text-3xl sm:text-5xl font-black text-cream-900 dark:text-white tracking-tight leading-tight">
                 Mahads Repository
             </h2>
-            <p class="text-base sm:text-lg text-matcha-600 dark:text-matcha-300 font-normal leading-relaxed">
+            <p class="text-base sm:text-lg text-matcha-800 dark:text-matcha-300 font-normal leading-relaxed">
                 hello my name is Mahad this is my website where you can view my projects
             </p>
         </section>
 
         <!-- Controls Bar: Category Filters & Search -->
-        <section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-2 border-b border-matcha-800/40">
+        <section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-2 border-b border-cream-200 dark:border-matcha-800/40">
             
             <!-- Category Filter Tabs -->
             <div class="flex items-center gap-1.5 overflow-x-auto pb-2 sm:pb-0 scrollbar-none" id="categoryFilterContainer">
                 <button data-category="All" class="category-btn active px-4 py-2 rounded-xl text-xs font-bold transition-all bg-matcha-500 text-white shadow-md shadow-matcha-500/20">
                     All
                 </button>
-                <button data-category="Apps" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-300 hover:text-white hover:bg-matcha-900">
+                <button data-category="Apps" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-700 dark:text-matcha-300 hover:text-matcha-950 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-matcha-900">
                     Apps
                 </button>
-                <button data-category="Games" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-300 hover:text-white hover:bg-matcha-900">
+                <button data-category="Games" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-700 dark:text-matcha-300 hover:text-matcha-950 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-matcha-900">
                     Games
                 </button>
-                <button data-category="Web" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-300 hover:text-white hover:bg-matcha-900">
+                <button data-category="Web" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-700 dark:text-matcha-300 hover:text-matcha-950 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-matcha-900">
                     Web
                 </button>
             </div>
 
             <!-- Search Bar -->
             <div class="relative min-w-[240px]">
-                <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-matcha-400 pointer-events-none"></i>
-                <input id="searchInput" type="text" placeholder="Search projects..." class="w-full pl-10 pr-4 py-2 rounded-xl text-xs bg-matcha-900/60 border border-matcha-800/80 text-white placeholder-matcha-400/60 focus:outline-none focus:border-matcha-500 transition-colors">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-matcha-500 dark:text-matcha-400 pointer-events-none"></i>
+                <input id="searchInput" type="text" placeholder="Search projects..." class="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs bg-cream-100 dark:bg-matcha-900/60 border border-cream-300 dark:border-matcha-800/80 text-cream-900 dark:text-white placeholder-matcha-600/60 dark:placeholder-matcha-400/60 focus:outline-none focus:border-matcha-500 transition-colors">
             </div>
         </section>
 
         <!-- Project Cards Grid -->
         <section id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Dynamic JavaScript Content Here -->
+            <!-- Dynamic JavaScript Cards Render Here -->
         </section>
 
-        <!-- Empty State Container -->
-        <section id="emptyState" class="hidden flex-col items-center justify-center text-center py-20 px-4 border-2 border-dashed border-matcha-800/50 rounded-3xl bg-matcha-900/20">
-            <div class="w-16 h-16 rounded-2xl bg-matcha-800/40 text-matcha-300 flex items-center justify-center mb-4">
+        <!-- Clean Empty State Container -->
+        <section id="emptyState" class="hidden flex-col items-center justify-center text-center py-20 px-4 border-2 border-dashed border-cream-300 dark:border-matcha-800/50 rounded-3xl bg-cream-100/50 dark:bg-matcha-900/20">
+            <div class="w-16 h-16 rounded-2xl bg-matcha-100 dark:bg-matcha-800/40 text-matcha-600 dark:text-matcha-300 flex items-center justify-center mb-4">
                 <i data-lucide="folder-open" class="w-8 h-8"></i>
             </div>
-            <h3 class="text-xl font-bold text-white mb-1">No Projects Found</h3>
-            <p class="text-xs text-matcha-300 max-w-sm">No projects match your search or filter. You can add your projects directly in the code array!</p>
+            <h3 class="text-xl font-bold text-cream-900 dark:text-white mb-2">No Projects Added Yet</h3>
+            <p class="text-xs text-matcha-700 dark:text-matcha-300 max-w-sm leading-relaxed">
+                Add project objects directly into the <code class="font-mono bg-cream-200 dark:bg-matcha-800 px-1.5 py-0.5 rounded text-matcha-800 dark:text-matcha-200">myProjects</code> JavaScript array in this file.
+            </p>
         </section>
 
     </main>
 
-    <!-- Project Detail Modal -->
-    <div id="projectModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
-        <div class="relative w-full max-w-xl bg-matcha-900 border border-matcha-800 rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
-            <div class="p-6 overflow-y-auto space-y-4">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <span id="modalCategory" class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-matcha-800 text-matcha-300">Category</span>
-                        <h3 id="modalTitle" class="text-2xl font-bold text-white mt-2">Project Title</h3>
-                    </div>
-                    <button id="closeModalBtn" class="p-2 text-matcha-400 hover:text-white rounded-xl hover:bg-matcha-800/60 transition-colors">
-                        <i data-lucide="x" class="w-5 h-5"></i>
-                    </button>
-                </div>
-                <p id="modalDescription" class="text-xs text-matcha-200 leading-relaxed">Description...</p>
-                
-                <div id="modalTags" class="flex flex-wrap gap-1.5 pt-2">
-                    <!-- Dynamic Tags -->
-                </div>
-            </div>
-
-            <div class="p-4 bg-matcha-950 border-t border-matcha-800 flex items-center justify-end gap-3">
-                <a id="modalCodeLink" href="#" target="_blank" class="hidden px-4 py-2 rounded-xl text-xs font-semibold bg-matcha-800 hover:bg-matcha-700 text-white transition-colors items-center gap-1.5">
-                    <i data-lucide="github" class="w-4 h-4"></i> View Code
-                </a>
-                <a id="modalLiveLink" href="#" target="_blank" class="px-4 py-2 rounded-xl text-xs font-semibold bg-matcha-500 hover:bg-matcha-600 text-white transition-colors flex items-center gap-1.5 shadow-md shadow-matcha-500/20">
-                    <i data-lucide="external-link" class="w-4 h-4"></i> Launch Live
-                </a>
-            </div>
-        </div>
-    </div>
-
     <!-- Footer -->
-    <footer class="w-full border-t border-matcha-800/40 py-6 text-center text-xs text-matcha-400">
+    <footer class="w-full border-t border-cream-200 dark:border-matcha-800/40 py-6 text-center text-xs text-matcha-700 dark:text-matcha-400">
         <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
             <p>&copy; 2026 Mahads Repository. Built with simplicity.</p>
-            <p class="flex items-center gap-1 text-matcha-400">
-                Crafted in Matcha Green
+            <p class="flex items-center gap-1">
+                Crafted with Matcha Aesthetic
             </p>
         </div>
     </footer>
 
     <script>
         /* 
-         * ==========================================
-         * MAHAD'S PROJECT REPOSITORY DATA
-         * ==========================================
-         * Add your projects manually here! Simply copy and paste 
-         * the template object below to add a new project card.
+         * ===================================================================
+         * MAHAD'S PROJECT REPOSITORY DATA SET
+         * ===================================================================
+         * To add a new project card, copy and paste a project object block 
+         * inside the `myProjects` array below!
          *
-         * Template:
+         * TEMPLATE EXAMPLE:
          * {
-         *     id: '1',
-         *     title: 'My Game Title',
-         *     category: 'Games', // Options: 'Apps', 'Games', or 'Web'
-         *     description: 'A quick explanation of what your project does.',
+         *     id: 'matcha-racer',
+         *     title: 'Matcha Racer',
+         *     category: 'Games', // Category options: 'Apps', 'Games', or 'Web'
+         *     description: 'Top-down arcade racing game with nitro boosts and traffic mechanics.',
          *     tags: ['HTML5', 'Canvas', 'JavaScript'],
-         *     liveUrl: 'racing.html', // Or full link like 'https://...'
-         *     codeUrl: 'https://github.com/your-username/repo' // (Optional)
-         * }
+         *     demoUrl: 'game.html', // Local file name (e.g. 'game.html') or full URL ('https://...')
+         *     codeUrl: '' // (Optional) GitHub repository link
+         * },
          */
-        const myProjects = [
-  {
-    id: 'matcha-racer',
-    title: 'Matcha Racer',
-    category: 'Games',
-    description: 'A top-down 2D arcade racing game with nitro boosts, dynamic traffic, drift mechanics, and sound FX.',
-    tags: ['HTML5', 'Canvas', 'JavaScript', 'Web Audio'],
-    demoUrl: 'game.html',
-    liveUrl: 'game.html',
-    codeUrl: ''
-  }
-];
 
-        // App State
+        const myProjects = [
+            // Start empty - ready for you to add your projects!
+        ];
+
+        // Application State
         let currentCategory = 'All';
         let searchQuery = '';
 
@@ -227,36 +192,27 @@
         const searchInput = document.getElementById('searchInput');
         const categoryFilterContainer = document.getElementById('categoryFilterContainer');
         
-        // Modal Elements
-        const projectModal = document.getElementById('projectModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalCategory = document.getElementById('modalCategory');
-        const modalDescription = document.getElementById('modalDescription');
-        const modalTags = document.getElementById('modalTags');
-        const modalLiveLink = document.getElementById('modalLiveLink');
-        const modalCodeLink = document.getElementById('modalCodeLink');
-
-        // Theme Toggle Logic
+        // Theme Toggle Elements
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const themeIconSun = document.getElementById('themeIconSun');
         const themeIconMoon = document.getElementById('themeIconMoon');
 
+        // Theme Switcher Logic
         themeToggleBtn.addEventListener('click', () => {
             const isDark = document.documentElement.classList.toggle('dark');
             themeIconSun.classList.toggle('hidden', !isDark);
             themeIconMoon.classList.toggle('hidden', isDark);
-            localStorage.setItem('matcha_theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('mahads_theme', isDark ? 'dark' : 'light');
         });
 
         // Load Saved Theme
-        if (localStorage.getItem('matcha_theme') === 'light') {
+        if (localStorage.getItem('mahads_theme') === 'light') {
             document.documentElement.classList.remove('dark');
             themeIconSun.classList.remove('hidden');
             themeIconMoon.classList.add('hidden');
         }
 
-        // Render Projects
+        // Render Project Cards Function
         function renderProjects() {
             const filtered = myProjects.filter(p => {
                 const matchesCategory = currentCategory === 'All' || p.category.toLowerCase() === currentCategory.toLowerCase();
@@ -276,112 +232,70 @@
             emptyState.classList.add('hidden');
             emptyState.classList.remove('flex');
 
-            projectsGrid.innerHTML = filtered.map(p => `
-                <div class="group bg-matcha-900/40 hover:bg-matcha-900/80 border border-matcha-800/80 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-matcha-500/5 flex flex-col justify-between">
+            projectsGrid.innerHTML = filtered.map(p => {
+                const playUrl = p.demoUrl || p.liveUrl || '#';
+                return `
+                <div class="group bg-cream-100 dark:bg-matcha-900/40 hover:bg-cream-200/60 dark:hover:bg-matcha-900/80 border border-cream-300 dark:border-matcha-800/80 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-matcha-500/5 flex flex-col justify-between">
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-matcha-800/80 text-matcha-300">
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-matcha-200 dark:bg-matcha-800 text-matcha-800 dark:text-matcha-200">
                                 ${p.category}
                             </span>
                         </div>
 
-                        <h3 class="text-lg font-bold text-white group-hover:text-matcha-300 transition-colors">
+                        <h3 class="text-lg font-bold text-cream-900 dark:text-white group-hover:text-matcha-600 dark:group-hover:text-matcha-300 transition-colors">
                             ${p.title}
                         </h3>
 
-                        <p class="text-xs text-matcha-300 line-clamp-3 leading-relaxed">
+                        <p class="text-xs text-matcha-800 dark:text-matcha-300 leading-relaxed line-clamp-3">
                             ${p.description}
                         </p>
                     </div>
 
-                    <div class="pt-4 mt-4 border-t border-matcha-800/40 flex items-center justify-between">
-                        <div class="flex flex-wrap gap-1 max-w-[70%]">
-                            ${p.tags.slice(0, 3).map(t => `<span class="text-[10px] text-matcha-400 font-mono">#${t}</span>`).join(' ')}
+                    <div class="pt-4 mt-4 border-t border-cream-200 dark:border-matcha-800/40 flex items-center justify-between gap-3">
+                        <div class="flex flex-wrap gap-1 max-w-[60%]">
+                            ${p.tags.map(t => `<span class="text-[10px] text-matcha-600 dark:text-matcha-400 font-mono">#${t}</span>`).join(' ')}
                         </div>
 
                         <div class="flex items-center gap-2">
-                            <button onclick="openModal('${p.id}')" class="p-2 rounded-xl text-matcha-300 hover:text-white hover:bg-matcha-800 transition-colors" title="Details">
-                                <i data-lucide="info" class="w-4 h-4"></i>
-                            </button>
-                            ${p.liveUrl ? `
-                                <a href="${p.liveUrl}" target="_blank" class="p-2 rounded-xl bg-matcha-500 hover:bg-matcha-600 text-white transition-colors" title="Launch">
-                                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                            ${p.codeUrl ? `
+                                <a href="${p.codeUrl}" target="_blank" class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-cream-300 dark:border-matcha-800/60 text-matcha-800 dark:text-matcha-300 hover:bg-cream-200 dark:hover:bg-matcha-800 transition-colors">
+                                    Code
                                 </a>
                             ` : ''}
+                            <a href="${playUrl}" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-matcha-500 hover:bg-matcha-600 text-white transition-colors flex items-center gap-1 shadow-md shadow-matcha-500/20">
+                                <span>Launch</span>
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
 
             lucide.createIcons();
         }
 
-        // Category Filter Event
+        // Category Filter Handling
         categoryFilterContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('category-btn')) {
                 document.querySelectorAll('.category-btn').forEach(btn => {
                     btn.classList.remove('bg-matcha-500', 'text-white', 'shadow-md', 'shadow-matcha-500/20');
-                    btn.classList.add('text-matcha-300');
+                    btn.classList.add('text-matcha-700', 'dark:text-matcha-300');
                 });
                 e.target.classList.add('bg-matcha-500', 'text-white', 'shadow-md', 'shadow-matcha-500/20');
-                e.target.classList.remove('text-matcha-300');
+                e.target.classList.remove('text-matcha-700', 'dark:text-matcha-300');
                 currentCategory = e.target.dataset.category;
                 renderProjects();
             }
         });
 
-        // Search Event
+        // Search Input Handling
         searchInput.addEventListener('input', (e) => {
             searchQuery = e.target.value;
             renderProjects();
         });
 
-        // Modal Handlers
-        window.openModal = function(id) {
-            const project = myProjects.find(p => p.id === id);
-            if (!project) return;
-
-            modalTitle.textContent = project.title;
-            modalCategory.textContent = project.category;
-            modalDescription.textContent = project.description;
-            
-            modalTags.innerHTML = project.tags.map(t => `
-                <span class="text-xs px-2.5 py-1 rounded-lg bg-matcha-800 text-matcha-200 font-mono">#${t}</span>
-            `).join('');
-
-            if (project.liveUrl) {
-                modalLiveLink.href = project.liveUrl;
-                modalLiveLink.classList.remove('hidden');
-                modalLiveLink.classList.add('flex');
-            } else {
-                modalLiveLink.classList.add('hidden');
-            }
-
-            if (project.codeUrl) {
-                modalCodeLink.href = project.codeUrl;
-                modalCodeLink.classList.remove('hidden');
-                modalCodeLink.classList.add('flex');
-            } else {
-                modalCodeLink.classList.add('hidden');
-            }
-
-            projectModal.classList.remove('opacity-0', 'pointer-events-none');
-            projectModal.querySelector('div').classList.remove('scale-95');
-            projectModal.querySelector('div').classList.add('scale-100');
-        };
-
-        function closeModal() {
-            projectModal.classList.add('opacity-0', 'pointer-events-none');
-            projectModal.querySelector('div').classList.remove('scale-100');
-            projectModal.querySelector('div').classList.add('scale-95');
-        }
-
-        closeModalBtn.addEventListener('click', closeModal);
-        projectModal.addEventListener('click', (e) => {
-            if (e.target === projectModal) closeModal();
-        });
-
-        // Initial Render
+        // Initialize page icons and render
         window.onload = () => {
             lucide.createIcons();
             renderProjects();
@@ -389,3 +303,4 @@
     </script>
 </body>
 </html>
+```

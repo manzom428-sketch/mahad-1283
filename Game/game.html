@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matcha Dodge | Mahads Repository</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0f170f;
+      color: #e5ebe5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    #gameContainer {
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #354d35;
+    }
+    canvas {
+      display: block;
+      background: #1b281b;
+    }
+    .hud {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: bold;
+      color: #a3b8a3;
+      pointer-events: none;
+    }
+    .hud-box {
+      background: rgba(15, 23, 15, 0.85);
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #354d35;
+    }
+    #backBtn {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      padding: 8px 16px;
+      background: #436043;
+      color: #fff;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    #backBtn:hover {
+      background: #587a58;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="gameContainer">
+    <div class="hud">
+      <div class="hud-box">SCORE: <span id="scoreText">0</span></div>
+      <div class="hud-box">HIGH SCORE: <span id="highScoreText">0</span></div>
+    </div>
+    <canvas id="gameCanvas" width="400" height="500"></canvas>
+    <a href="index.html" id="backBtn">← Back to Repository</a>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreText = document.getElementById('scoreText');
+    const highScoreText = document.getElementById('highScoreText');
+
+    let score = 0;
+    let highScore = localStorage.getItem('matcha_dodge_high') || 0;
+    highScoreText.innerText = highScore;
+
+    let gameOver = false;
+    let spawnTimer = 0;
+
+    // Player Object
+    const player = {
+      x: canvas.width / 2 - 15,
+      y: canvas.height - 40,
+      size: 30,
+      speed: 6,
+      color: '#82a082'
+    };
+
+    // Falling Objects
+    const obstacles = [];
+    const keys = {};
+
+    window.addEventListener('keydown', e => keys[e.key] = true);
+    window.addEventListener('keyup', e => keys[e.key] = false);
+
+    function spawnObstacle() {
+      const size = Math.random() * 20 + 15;
+      obstacles.push({
+        x: Math.random() * (canvas.width - size),
+        y: -size,
+        size: size,
+        speed: Math.random() * 3 + 2,
+        color: '#cebcbe'
+      });
+    }
+
+    function update() {
+      if (gameOver) return;
+
+      // Player Movement
+      if ((keys['ArrowLeft'] || keys['a']) && player.x > 0) {
+        player.x -= player.speed;
+      }
+      if ((keys['ArrowRight'] || keys['d']) && player.x + player.size < canvas.width) {
+        player.x += player.speed;
+      }
+
+      // Spawn Obstacles
+      spawnTimer++;
+      if (spawnTimer % 20 === 0) {
+        spawnObstacle();
+      }
+
+      // Update Obstacles
+      for (let i = 0; i < obstacles.length; i++) {
+        let obs = obstacles[i];
+        obs.y += obs.speed;
+
+        // Collision Detection
+        if (
+          player.x < obs.x + obs.size &&
+          player.x + player.size > obs.x &&
+          player.y < obs.y + obs.size &&
+          player.y + player.size > obs.y
+        ) {
+          gameOver = true;
+          if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('matcha_dodge_high', highScore);
+            highScoreText.innerText = highScore;
+          }
+        }
+      }
+
+      // Remove off-screen obstacles and increase score
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        if (obstacles[i].y > canvas.height) {
+          obstacles.splice(i, 1);
+          score += 10;
+          scoreText.innerText = score;
+        }
+      }
+    }
+
+    function draw() {
+      // Clear Background
+      ctx.fillStyle = '#1b281b';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw Grid Line Accents
+      ctx.strokeStyle = '#2a3d2a';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+
+      // Draw Player
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.size, player.size);
+      ctx.strokeStyle = '#a3b8a3';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(player.x, player.y, player.size, player.size);
+
+      // Draw Obstacles
+      obstacles.forEach(obs => {
+        ctx.fillStyle = obs.color;
+        ctx.fillRect(obs.x, obs.y, obs.size, obs.size);
+      });
+
+      // Game Over Screen
+      if (gameOver) {
+        ctx.fillStyle = 'rgba(15, 23, 15, 0.85)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#e5ebe5';
+        ctx.font = '24px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 20);
+
+        ctx.font = '14px monospace';
+        ctx.fillText('Press SPACE to Restart', canvas.width / 2, canvas.height / 2 + 20);
+      }
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    window.addEventListener('keydown', e => {
+      if (e.code === 'Space' && gameOver) {
+        score = 0;
+        scoreText.innerText = score;
+        obstacles.length = 0;
+        player.x = canvas.width / 2 - 15;
+        gameOver = false;
+      }
+    });
+
+    loop();
+  </script>
+</body>
+</html>

@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mahads Repository</title>
-    <!-- Tailwind CSS -->
+    <title>Mahad's Repository | Portfolio & Games</title>
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
+    
+    <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -24,26 +27,38 @@
                     },
                     colors: {
                         matcha: {
-                            50: '#f6f8f4',
-                            100: '#ebf0e6',
-                            200: '#d7e2cc',
-                            300: '#bbcea8',
-                            400: '#9cb780',
-                            500: '#7f9c60',
-                            600: '#647e49',
-                            700: '#50643b',
-                            800: '#415231',
-                            900: '#23301a',
-                            950: '#0e140b',
+                            50: '#f4f7f1',
+                            100: '#e5ecd8',
+                            200: '#cbdab6',
+                            300: '#a8c28b',
+                            400: '#84a861',
+                            500: '#688d44',
+                            600: '#517133',
+                            700: '#40582a',
+                            800: '#354724',
+                            900: '#2d3c20',
+                            950: '#16200f',
                         },
-                        cream: {
-                            50: '#fdfbf7',
-                            100: '#f8f4eb',
-                            200: '#f0e8d8',
-                            300: '#e5d7be',
-                            400: '#d4bf9c',
-                            800: '#3e3527',
-                            900: '#241e15',
+                        cyber: {
+                            dark: '#0d1117',
+                            card: '#161b22',
+                            border: '#30363d',
+                            accent: '#20e070',
+                            gold: '#fbbf24',
+                        }
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '1', filter: 'drop-shadow(0 0 12px rgba(104, 141, 68, 0.6))' },
+                            '50%': { opacity: '.7', filter: 'drop-shadow(0 0 4px rgba(104, 141, 68, 0.2))' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-6px)' },
                         }
                     }
                 }
@@ -51,175 +66,763 @@
         }
     </script>
     <style>
-        body {
-            transition: background-color 0.3s ease, color 0.3s ease;
+        /* Custom scrollbar and aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-        .matcha-glow {
-            box-shadow: 0 0 25px -5px rgba(127, 156, 96, 0.25);
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #40582a;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #688d44;
+        }
+        .canvas-container {
+            position: relative;
+            box-shadow: 0 0 30px rgba(104, 141, 68, 0.2);
+        }
+        .glass-panel {
+            background: rgba(22, 27, 34, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
         }
     </style>
 </head>
-<body class="bg-cream-50 text-matcha-950 dark:bg-matcha-950 dark:text-matcha-100 min-h-screen flex flex-col justify-between transition-colors duration-300 font-sans selection:bg-matcha-500 selection:text-white">
+<body class="bg-slate-950 text-slate-100 dark:bg-cyber-dark dark:text-slate-100 min-h-screen flex flex-col font-sans selection:bg-matcha-500 selection:text-white transition-colors duration-300">
 
-    <!-- Header Navigation -->
-    <header class="sticky top-0 z-40 backdrop-blur-md bg-cream-50/80 dark:bg-matcha-950/80 border-b border-cream-200 dark:border-matcha-800/40 transition-colors duration-300">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-cyber-dark/80 border-b border-cyber-border/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             
-            <!-- Brand Logo -->
+            <!-- Logo & Brand -->
             <a href="#" class="flex items-center gap-3 group">
-                <div class="relative w-10 h-10 rounded-xl bg-matcha-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-matcha-500/20 group-hover:scale-105 transition-transform">
-                    <i data-lucide="folder-git-2" class="w-5 h-5"></i>
-                    <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-matcha-300 border-2 border-cream-50 dark:border-matcha-950 animate-pulse"></span>
+                <div class="relative w-10 h-10 rounded-xl bg-gradient-to-br from-matcha-400 to-matcha-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-matcha-500/20 group-hover:scale-105 transition-transform">
+                    <i data-lucide="gamepad-2" class="w-5 h-5"></i>
+                    <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-cyber-accent border-2 border-cyber-dark animate-pulse"></span>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-cream-900 dark:text-matcha-50 flex items-center gap-2">
-                        Mahads Repository
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-white flex items-center gap-2">
+                        Mahad's Repository
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-matcha-500/20 text-matcha-400 border border-matcha-500/30">v2.0</span>
                     </h1>
-                    <p class="text-xs text-matcha-600 dark:text-matcha-300 font-medium">Personal Project Showcase</p>
+                    <p class="text-xs text-slate-400 font-medium">Interactive Games & Web Apps Hub</p>
                 </div>
             </a>
 
-            <!-- Theme Toggle Button -->
-            <button id="themeToggleBtn" title="Toggle Theme" class="p-2.5 rounded-xl border border-cream-300 dark:border-matcha-800/60 text-matcha-700 dark:text-matcha-300 hover:text-matcha-900 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-matcha-900 transition-all">
-                <i id="themeIconSun" data-lucide="sun" class="w-5 h-5 hidden"></i>
-                <i id="themeIconMoon" data-lucide="moon" class="w-5 h-5"></i>
-            </button>
+            <!-- Right Controls & Navigation -->
+            <div class="flex items-center gap-3">
+                <button id="scrollToGameBtn" class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-matcha-500 hover:bg-matcha-600 text-white font-semibold text-xs transition-all shadow-lg shadow-matcha-500/20 hover:scale-105">
+                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                    <span>Quick Play</span>
+                </button>
+
+                <button id="addProjectModalBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyber-card border border-cyber-border hover:border-matcha-500 text-slate-200 text-xs font-semibold transition-all hover:text-white">
+                    <i data-lucide="plus" class="w-4 h-4 text-matcha-400"></i>
+                    <span class="hidden sm:inline">Add Project</span>
+                </button>
+
+                <!-- Sound FX Toggle -->
+                <button id="audioToggleBtn" title="Toggle Sound FX" class="p-2 rounded-xl border border-cyber-border text-slate-400 hover:text-matcha-400 hover:bg-cyber-card transition-all">
+                    <i id="audioIconOn" data-lucide="volume-2" class="w-4 h-4"></i>
+                    <i id="audioIconOff" data-lucide="volume-x" class="w-4 h-4 hidden"></i>
+                </button>
+
+                <!-- Theme Toggle -->
+                <button id="themeToggleBtn" title="Toggle Dark/Light Mode" class="p-2 rounded-xl border border-cyber-border text-slate-400 hover:text-white hover:bg-cyber-card transition-all">
+                    <i id="themeIconSun" data-lucide="sun" class="w-4 h-4 hidden"></i>
+                    <i id="themeIconMoon" data-lucide="moon" class="w-4 h-4"></i>
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-10 flex flex-col gap-10">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-12">
         
-        <!-- Hero Section -->
-        <section class="text-center py-6 sm:py-10 max-w-2xl mx-auto space-y-4">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-matcha-100 dark:bg-matcha-800/40 border border-matcha-200 dark:border-matcha-700/50 text-matcha-700 dark:text-matcha-300 text-xs font-semibold uppercase tracking-wider">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-matcha-500 dark:text-matcha-400"></i>
-                Welcome
+        <!-- Hero & Profile Section -->
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-cyber-card via-cyber-dark to-cyber-card border border-cyber-border p-6 sm:p-10 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl">
+            <div class="space-y-4 max-w-2xl text-center lg:text-left z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-matcha-500/10 border border-matcha-500/30 text-matcha-400 text-xs font-bold uppercase tracking-wider">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    Welcome to my official hub
+                </div>
+                <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                    Hey, I'm <span class="bg-gradient-to-r from-matcha-300 via-matcha-400 to-cyber-accent bg-clip-text text-transparent">Mahad</span> 👋
+                </h2>
+                <p class="text-slate-300 text-base sm:text-lg leading-relaxed font-normal">
+                    Explore my interactive games, web applications, and programming experiments right here inside this repository! Play games directly in your browser without leaving the page.
+                </p>
+
+                <!-- Action Badges -->
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+                    <div class="flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-lg bg-cyber-dark border border-cyber-border text-slate-300">
+                        <i data-lucide="code-2" class="w-4 h-4 text-matcha-400"></i>
+                        <span>JavaScript / HTML5 / CSS</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-lg bg-cyber-dark border border-cyber-border text-slate-300">
+                        <i data-lucide="trophy" class="w-4 h-4 text-cyber-gold"></i>
+                        <span id="globalHighScoreDisplay">Top Score: 0</span>
+                    </div>
+                </div>
             </div>
-            <h2 class="text-3xl sm:text-5xl font-black text-cream-900 dark:text-white tracking-tight leading-tight">
-                Mahads Repository
-            </h2>
-            <p class="text-base sm:text-lg text-matcha-800 dark:text-matcha-300 font-normal leading-relaxed">
-                hello my name is Mahad this is my website where you can view my projects
-            </p>
+
+            <!-- Arcade Mascot Canvas / Card Feature -->
+            <div class="relative flex-shrink-0 w-full sm:w-80 p-5 rounded-2xl bg-cyber-dark/80 border border-matcha-500/30 text-center space-y-3 shadow-xl hover:border-matcha-500/60 transition-all group">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-matcha-500/20 text-matcha-400 flex items-center justify-center border border-matcha-500/40 group-hover:scale-110 transition-transform">
+                    <i data-lucide="flame" class="w-8 h-8 animate-pulse"></i>
+                </div>
+                <h3 class="font-bold text-white text-base">Matcha Dodge Arcade</h3>
+                <p class="text-xs text-slate-400">Integrated directly into this page. Click below to dive straight in!</p>
+                <button onclick="document.getElementById('gameContainerSection').scrollIntoView({ behavior: 'smooth' })" class="w-full py-2 px-4 rounded-xl bg-matcha-500 hover:bg-matcha-600 text-white text-xs font-bold transition-all shadow-md">
+                    Play Featured Game ↓
+                </button>
+            </div>
         </section>
 
-        <!-- Controls Bar: Category Filters & Search -->
-        <section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-2 border-b border-cream-200 dark:border-matcha-800/40">
+        <section id="gameContainerSection" class="scroll-mt-20 space-y-4">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-cyber-border/60 pb-3">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-xl bg-matcha-500/20 text-matcha-400 border border-matcha-500/30">
+                        <i data-lucide="gamepad" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            Featured Game: Matcha Cyber Dash
+                            <span class="text-xs font-mono font-normal text-matcha-400 bg-matcha-500/10 px-2 py-0.5 rounded border border-matcha-500/20">Playable</span>
+                        </h2>
+                        <p class="text-xs text-slate-400">Dodge falling laser barriers, collect green matcha gems, and use shield powerups!</p>
+                    </div>
+                </div>
+
+                <!-- Controls info -->
+                <div class="text-xs text-slate-400 flex items-center gap-2 font-mono bg-cyber-card px-3 py-1.5 rounded-xl border border-cyber-border">
+                    <i data-lucide="keyboard" class="w-4 h-4 text-matcha-400"></i>
+                    <span>Controls: [A][D] or [←][→] or Touch</span>
+                </div>
+            </div>
+
+            <!-- Arcade Machine Canvas Frame -->
+            <div class="relative w-full rounded-2xl bg-cyber-card border-2 border-cyber-border p-3 sm:p-5 flex flex-col items-center justify-center shadow-2xl overflow-hidden">
+                
+                <!-- Game Score & Status HUD -->
+                <div class="w-full max-w-2xl flex items-center justify-between mb-3 px-2 font-mono text-xs sm:text-sm">
+                    <div class="flex items-center gap-4">
+                        <span class="text-slate-400">Score: <strong id="gameScoreVal" class="text-matcha-400 text-base sm:text-lg">0</strong></span>
+                        <span class="text-slate-400">Gems: <strong id="gameGemsVal" class="text-cyber-accent text-base">0</strong></span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-slate-400">Lives: <span id="gameLivesVal" class="text-red-400 font-bold">❤️❤️❤️</span></span>
+                        <button id="gamePauseBtn" class="px-2.5 py-1 rounded-lg bg-cyber-dark border border-cyber-border text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                            Pause
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas Holder -->
+                <div class="canvas-container w-full max-w-2xl aspect-[4/3] rounded-xl overflow-hidden border border-matcha-500/40 bg-cyber-dark relative">
+                    <canvas id="arcadeCanvas" class="w-full h-full block cursor-pointer"></canvas>
+
+                    <!-- Game Overlay UI (Start / Game Over) -->
+                    <div id="gameOverlay" class="absolute inset-0 bg-cyber-dark/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-4 transition-all">
+                        <div class="w-16 h-16 rounded-2xl bg-matcha-500/20 text-matcha-400 flex items-center justify-center border border-matcha-500/40 animate-bounce">
+                            <i data-lucide="zap" class="w-8 h-8"></i>
+                        </div>
+                        <h3 id="overlayTitle" class="text-2xl sm:text-3xl font-black text-white tracking-wide">MATCHA CYBER DASH</h3>
+                        <p id="overlaySub" class="text-xs sm:text-sm text-slate-300 max-w-md">
+                            Use arrow keys or touch buttons to move. Avoid glowing laser blocks, pick up green matcha energy cells, and activate shields!
+                        </p>
+
+                        <div class="pt-2">
+                            <button id="startGameBtn" class="px-6 py-3 rounded-xl bg-gradient-to-r from-matcha-500 to-matcha-600 hover:from-matcha-600 hover:to-matcha-700 text-white font-extrabold text-sm tracking-wider uppercase shadow-xl shadow-matcha-500/30 transform hover:scale-105 transition-all flex items-center gap-2">
+                                <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                                <span>Start Game</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- On-Screen Touch Controls for Mobile -->
+                <div class="w-full max-w-2xl mt-4 flex items-center justify-between gap-4 sm:hidden">
+                    <button id="btnMoveLeft" class="flex-1 py-3 bg-cyber-dark border border-cyber-border active:bg-matcha-500/30 rounded-xl text-white font-bold text-center select-none">
+                        ◀ Left
+                    </button>
+                    <button id="btnMoveRight" class="flex-1 py-3 bg-cyber-dark border border-cyber-border active:bg-matcha-500/30 rounded-xl text-white font-bold text-center select-none">
+                        Right ▶
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-6">
             
-            <!-- Category Filter Tabs -->
-            <div class="flex items-center gap-1.5 overflow-x-auto pb-2 sm:pb-0 scrollbar-none" id="categoryFilterContainer">
-                <button data-category="All" class="category-btn active px-4 py-2 rounded-xl text-xs font-bold transition-all bg-matcha-500 text-white shadow-md shadow-matcha-500/20">
-                    All
-                </button>
-                <button data-category="Apps" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-700 dark:text-matcha-300 hover:text-matcha-950 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-matcha-900">
-                    Apps
-                </button>
-                <button data-category="Games" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-700 dark:text-matcha-300 hover:text-matcha-950 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-matcha-900">
-                    Games
-                </button>
-                <button data-category="Web" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-matcha-700 dark:text-matcha-300 hover:text-matcha-950 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-matcha-900">
-                    Web
-                </button>
+            <!-- Filter Bar & Search Container -->
+            <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pb-4 border-b border-cyber-border">
+                
+                <!-- Category Tabs -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none" id="categoryFilterContainer">
+                    <button data-category="All" class="category-btn active px-4 py-2 rounded-xl text-xs font-bold transition-all bg-matcha-500 text-white shadow-md shadow-matcha-500/20">
+                        All Projects
+                    </button>
+                    <button data-category="Games" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-cyber-card border border-cyber-border text-slate-300 hover:text-white hover:border-matcha-500">
+                        Games 🎮
+                    </button>
+                    <button data-category="Apps" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-cyber-card border border-cyber-border text-slate-300 hover:text-white hover:border-matcha-500">
+                        Apps ⚡
+                    </button>
+                    <button data-category="Web" class="category-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-cyber-card border border-cyber-border text-slate-300 hover:text-white hover:border-matcha-500">
+                        Web Sites 🌐
+                    </button>
+                </div>
+
+                <!-- Search Input Bar -->
+                <div class="relative min-w-[260px]">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input id="searchInput" type="text" placeholder="Search by title, tag, or description..." class="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs bg-cyber-card border border-cyber-border text-white placeholder-slate-500 focus:outline-none focus:border-matcha-500 transition-colors">
+                </div>
             </div>
 
-            <!-- Search Bar -->
-            <div class="relative min-w-[240px]">
-                <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-matcha-500 dark:text-matcha-400 pointer-events-none"></i>
-                <input id="searchInput" type="text" placeholder="Search projects..." class="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs bg-cream-100 dark:bg-matcha-900/60 border border-cream-300 dark:border-matcha-800/80 text-cream-900 dark:text-white placeholder-matcha-600/60 dark:placeholder-matcha-400/60 focus:outline-none focus:border-matcha-500 transition-colors">
+            <!-- Projects Grid -->
+            <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Project cards render dynamically via JS -->
             </div>
-        </section>
 
-        <!-- Project Cards Grid -->
-        <section id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Dynamic JavaScript Cards Render Here -->
-        </section>
-
-        <!-- Clean Empty State Container -->
-        <section id="emptyState" class="hidden flex-col items-center justify-center text-center py-20 px-4 border-2 border-dashed border-cream-300 dark:border-matcha-800/50 rounded-3xl bg-cream-100/50 dark:bg-matcha-900/20">
-            <div class="w-16 h-16 rounded-2xl bg-matcha-100 dark:bg-matcha-800/40 text-matcha-600 dark:text-matcha-300 flex items-center justify-center mb-4">
-                <i data-lucide="folder-open" class="w-8 h-8"></i>
+            <!-- Empty Search State -->
+            <div id="emptyState" class="hidden flex-col items-center justify-center text-center py-16 px-4 border-2 border-dashed border-cyber-border rounded-3xl bg-cyber-card/40">
+                <div class="w-16 h-16 rounded-2xl bg-cyber-dark text-slate-400 flex items-center justify-center mb-3 border border-cyber-border">
+                    <i data-lucide="folder-search" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1">No Projects Found</h3>
+                <p class="text-xs text-slate-400 max-w-sm">Try tweaking your search terms or click "Add Project" above to create a new one!</p>
             </div>
-            <h3 class="text-xl font-bold text-cream-900 dark:text-white mb-2">No Projects Added Yet</h3>
-            <p class="text-xs text-matcha-700 dark:text-matcha-300 max-w-sm leading-relaxed">
-                Add project objects directly into the <code class="font-mono bg-cream-200 dark:bg-matcha-800 px-1.5 py-0.5 rounded text-matcha-800 dark:text-matcha-200">myProjects</code> JavaScript array in this file.
-            </p>
         </section>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="w-full border-t border-cream-200 dark:border-matcha-800/40 py-6 text-center text-xs text-matcha-700 dark:text-matcha-400">
-        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>&copy; 2026 Mahads Repository. Built with simplicity.</p>
-            <p class="flex items-center gap-1">
-                Crafted with Matcha Aesthetic
-            </p>
+    <!-- Add New Project Modal -->
+    <div id="addProjectModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-cyber-card border border-cyber-border rounded-3xl max-w-lg w-full p-6 space-y-5 relative shadow-2xl">
+            <button id="closeAddProjectModal" class="absolute top-5 right-5 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-3">
+                <div class="p-2 rounded-xl bg-matcha-500/20 text-matcha-400 border border-matcha-500/30">
+                    <i data-lucide="folder-plus" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Add Project to Repository</h3>
+                    <p class="text-xs text-slate-400">Fill out details to showcase a new app or game</p>
+                </div>
+            </div>
+
+            <form id="addProjectForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Project Title</label>
+                    <input id="projTitle" type="text" required placeholder="e.g. Matcha Racer" class="w-full px-3.5 py-2.5 rounded-xl bg-cyber-dark border border-cyber-border text-xs text-white focus:outline-none focus:border-matcha-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Category</label>
+                        <select id="projCategory" class="w-full px-3 py-2.5 rounded-xl bg-cyber-dark border border-cyber-border text-xs text-white focus:outline-none focus:border-matcha-500">
+                            <option value="Games">Games</option>
+                            <option value="Apps">Apps</option>
+                            <option value="Web">Web</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Tags (comma separated)</label>
+                        <input id="projTags" type="text" placeholder="HTML5, Canvas, JS" class="w-full px-3 py-2.5 rounded-xl bg-cyber-dark border border-cyber-border text-xs text-white focus:outline-none focus:border-matcha-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Description</label>
+                    <textarea id="projDesc" rows="3" required placeholder="Brief description of what this project does..." class="w-full px-3 py-2.5 rounded-xl bg-cyber-dark border border-cyber-border text-xs text-white focus:outline-none focus:border-matcha-500"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Demo / Launch URL</label>
+                        <input id="projDemoUrl" type="text" placeholder="#gameContainerSection" class="w-full px-3 py-2.5 rounded-xl bg-cyber-dark border border-cyber-border text-xs text-white focus:outline-none focus:border-matcha-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">GitHub / Code URL (Optional)</label>
+                        <input id="projCodeUrl" type="text" placeholder="https://github.com/..." class="w-full px-3 py-2.5 rounded-xl bg-cyber-dark border border-cyber-border text-xs text-white focus:outline-none focus:border-matcha-500">
+                    </div>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-3">
+                    <button type="button" id="cancelAddProject" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-matcha-500 hover:bg-matcha-600 text-white font-bold text-xs shadow-md">Add Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="w-full border-t border-cyber-border/60 py-6 text-center text-xs text-slate-400 mt-12 bg-cyber-card/30">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>&copy; 2026 Mahad's Repository. All projects running seamlessly in-browser.</p>
+            <div class="flex items-center gap-4 text-slate-400">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-cyber-accent animate-ping"></span>
+                    System Online
+                </span>
+            </div>
         </div>
     </footer>
 
     <script>
-        /* 
-         * ===================================================================
-         * MAHAD'S PROJECT REPOSITORY DATA SET
-         * ===================================================================
-         * To add a new project card, copy and paste a project object block 
-         * inside the `myProjects` array below!
-         *
-         * TEMPLATE EXAMPLE:
-         * {
-         *     id: 'matcha-racer',
-         *     title: 'Matcha Racer',
-         *     category: 'Games', // Category options: 'Apps', 'Games', or 'Web'
-         *     description: 'Top-down arcade racing game with nitro boosts and traffic mechanics.',
-         *     tags: ['HTML5', 'Canvas', 'JavaScript'],
-         *     demoUrl: 'game.html', // Local file name (e.g. 'game.html') or full URL ('https://...')
-         *     codeUrl: '' // (Optional) GitHub repository link
-         * },
-         */
-
-        const myProjects = [
-            // Start empty - ready for you to add your projects!
+        /* ===================================================================
+         * MAHAD'S REPOSITORY - PROJECT DATA & STORAGE
+         * =================================================================== */
+        const defaultProjects = [
+            {
+                id: 'matcha-cyber-dash',
+                title: 'Matcha Cyber Dash',
+                category: 'Games',
+                description: 'Built-in fast-paced arcade dodger featuring matcha energy cells, shields, sound effects, and high scores.',
+                tags: ['HTML5 Canvas', 'Web Audio API', 'JavaScript'],
+                demoUrl: '#gameContainerSection',
+                codeUrl: '',
+                isFeatured: true
+            },
+            {
+                id: 'retro-snake-arcade',
+                title: 'Retro Cyber Snake',
+                category: 'Games',
+                description: 'Classic arcade snake game with smooth controls, speed power-ups, and neon trail effects.',
+                tags: ['JavaScript', 'Canvas', 'Retro'],
+                demoUrl: '#gameContainerSection',
+                codeUrl: ''
+            },
+            {
+                id: 'mahad-portfolio-web',
+                title: 'Mahad\'s Portfolio Hub',
+                category: 'Web',
+                description: 'Modern single-file showcase website built with Tailwind CSS, dynamic dark mode, and real-time project filtering.',
+                tags: ['TailwindCSS', 'JavaScript', 'Responsive'],
+                demoUrl: '#',
+                codeUrl: ''
+            },
+            {
+                id: 'quick-notes-app',
+                title: 'Matcha Task Manager',
+                category: 'Apps',
+                description: 'Minimalist web application for tracking coding goals, project tasks, and daily routines.',
+                tags: ['Web App', 'LocalStorage', 'UI/UX'],
+                demoUrl: '#',
+                codeUrl: ''
+            }
         ];
 
-        // Application State
+        // Load saved projects or use defaults
+        let myProjects = JSON.parse(localStorage.getItem('mahads_projects')) || defaultProjects;
+
+        /* ===================================================================
+         * SOUND FX ENGINE (Web Audio API - No external files needed!)
+         * =================================================================== */
+        let audioEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!audioEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'gem') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.15); // C6
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                } else if (type === 'hit') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.exponentialRampToValueAtTime(40, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'start') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(261.63, now);
+                    osc.frequency.setValueAtTime(329.63, now + 0.1);
+                    osc.frequency.setValueAtTime(392.00, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                }
+            } catch (e) {
+                console.log('Audio init pending user interaction');
+            }
+        }
+
+        /* ===================================================================
+         * CANVAS GAME ENGINE: MATCHA CYBER DASH
+         * =================================================================== */
+        const canvas = document.getElementById('arcadeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas dynamic resolution
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+
+        // Game State Variables
+        let gameState = 'START'; // START, PLAYING, PAUSED, GAMEOVER
+        let score = 0;
+        let gems = 0;
+        let lives = 3;
+        let highScore = parseInt(localStorage.getItem('mahads_high_score') || '0', 10);
+
+        // Player Object
+        const player = {
+            x: 0,
+            y: 0,
+            width: 36,
+            height: 36,
+            speed: 6,
+            dx: 0,
+            color: '#84a861'
+        };
+
+        // Game Arrays
+        let obstacles = [];
+        let items = [];
+        let particles = [];
+        let spawnTimer = 0;
+        let itemTimer = 0;
+
+        // Input Tracking
+        const keys = { left: false, right: false };
+
+        function resetGame() {
+            resizeCanvas();
+            score = 0;
+            gems = 0;
+            lives = 3;
+            obstacles = [];
+            items = [];
+            particles = [];
+            player.x = canvas.width / 2 - player.width / 2;
+            player.y = canvas.height - player.height - 20;
+            updateHUD();
+        }
+
+        function updateHUD() {
+            document.getElementById('gameScoreVal').innerText = score;
+            document.getElementById('gameGemsVal').innerText = gems;
+            document.getElementById('gameLivesVal').innerText = '❤️'.repeat(Math.max(0, lives));
+            document.getElementById('globalHighScoreDisplay').innerText = `Top Score: ${highScore}`;
+        }
+
+        // Spawn Game Objects
+        function spawnObstacle() {
+            const width = Math.random() * 40 + 30;
+            obstacles.push({
+                x: Math.random() * (canvas.width - width),
+                y: -30,
+                width: width,
+                height: 18,
+                speed: Math.random() * 2 + 3 + (score / 150),
+                color: '#ef4444'
+            });
+        }
+
+        function spawnItem() {
+            items.push({
+                x: Math.random() * (canvas.width - 24),
+                y: -24,
+                width: 22,
+                height: 22,
+                speed: 2.5,
+                color: '#20e070'
+            });
+        }
+
+        function addParticles(x, y, color) {
+            for (let i = 0; i < 8; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: (Math.random() - 0.5) * 6,
+                    radius: Math.random() * 4 + 2,
+                    color: color,
+                    alpha: 1
+                });
+            }
+        }
+
+        // Main Game Loop
+        function gameLoop() {
+            if (gameState === 'PLAYING') {
+                updateGame();
+            }
+            renderGame();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function updateGame() {
+            score++;
+            if (score % 10 === 0) updateHUD();
+
+            // Handle Player Movement
+            if (keys.left && player.x > 0) {
+                player.x -= player.speed;
+            }
+            if (keys.right && player.x < canvas.width - player.width) {
+                player.x += player.speed;
+            }
+
+            // Spawn Obstacles & Items
+            spawnTimer++;
+            if (spawnTimer > Math.max(20, 60 - Math.floor(score / 80))) {
+                spawnObstacle();
+                spawnTimer = 0;
+            }
+
+            itemTimer++;
+            if (itemTimer > 120) {
+                spawnItem();
+                itemTimer = 0;
+            }
+
+            // Update Obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const obs = obstacles[i];
+                obs.y += obs.speed;
+
+                // Collision Detection with Player
+                if (
+                    player.x < obs.x + obs.width &&
+                    player.x + player.width > obs.x &&
+                    player.y < obs.y + obs.height &&
+                    player.y + player.height > obs.y
+                ) {
+                    addParticles(player.x + player.width / 2, player.y + player.height / 2, '#ef4444');
+                    playSound('hit');
+                    lives--;
+                    obstacles.splice(i, 1);
+                    updateHUD();
+
+                    if (lives <= 0) {
+                        endGame();
+                    }
+                    continue;
+                }
+
+                // Remove offscreen
+                if (obs.y > canvas.height) {
+                    obstacles.splice(i, 1);
+                }
+            }
+
+            // Update Items (Gems)
+            for (let i = items.length - 1; i >= 0; i--) {
+                const it = items[i];
+                it.y += it.speed;
+
+                // Pickup Detection
+                if (
+                    player.x < it.x + it.width &&
+                    player.x + player.width > it.x &&
+                    player.y < it.y + it.height &&
+                    player.y + player.height > it.y
+                ) {
+                    addParticles(it.x + it.width / 2, it.y + it.height / 2, '#20e070');
+                    playSound('gem');
+                    gems++;
+                    score += 50;
+                    items.splice(i, 1);
+                    updateHUD();
+                    continue;
+                }
+
+                if (it.y > canvas.height) {
+                    items.splice(i, 1);
+                }
+            }
+
+            // Update Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.03;
+                if (p.alpha <= 0) particles.splice(i, 1);
+            }
+        }
+
+        function renderGame() {
+            // Clear background with dark grid theme
+            ctx.fillStyle = '#0d1117';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw subtle scrolling background lines
+            ctx.strokeStyle = 'rgba(48, 54, 61, 0.4)';
+            ctx.lineWidth = 1;
+            const lineOffset = (score * 2) % 30;
+            for (let y = lineOffset; y < canvas.height; y += 30) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Draw Player
+            ctx.fillStyle = player.color;
+            ctx.shadowColor = '#84a861';
+            ctx.shadowBlur = 12;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            // Player core accent
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(player.x + 8, player.y + 8, player.width - 16, player.height - 16);
+            ctx.shadowBlur = 0;
+
+            // Draw Obstacles
+            obstacles.forEach(obs => {
+                ctx.fillStyle = obs.color;
+                ctx.shadowColor = obs.color;
+                ctx.shadowBlur = 8;
+                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+                ctx.shadowBlur = 0;
+            });
+
+            // Draw Matcha Gems
+            items.forEach(it => {
+                ctx.fillStyle = it.color;
+                ctx.shadowColor = it.color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(it.x + it.width / 2, it.y + it.height / 2, it.width / 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            // Draw Particles
+            particles.forEach(p => {
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+        }
+
+        function startGame() {
+            resetGame();
+            gameState = 'PLAYING';
+            playSound('start');
+            document.getElementById('gameOverlay').classList.add('hidden');
+        }
+
+        function endGame() {
+            gameState = 'GAMEOVER';
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('mahads_high_score', highScore.toString());
+            }
+            updateHUD();
+
+            document.getElementById('overlayTitle').innerText = 'GAME OVER';
+            document.getElementById('overlaySub').innerText = `Final Score: ${score} | Gems Collected: ${gems}`;
+            document.getElementById('startGameBtn').querySelector('span').innerText = 'Play Again';
+            document.getElementById('gameOverlay').classList.remove('hidden');
+        }
+
+        /* ===================================================================
+         * UI CONTROLS & EVENT LISTENERS
+         * =================================================================== */
+        
+        // Window Resize
+        window.addEventListener('resize', resizeCanvas);
+
+        // Keyboard Event Listeners
+        window.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
+        });
+
+        window.addEventListener('keyup', e => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+        });
+
+        // Touch Control Listeners
+        const btnLeft = document.getElementById('btnMoveLeft');
+        const btnRight = document.getElementById('btnMoveRight');
+
+        btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); keys.left = true; });
+        btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); keys.left = false; });
+        btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); keys.right = true; });
+        btnRight.addEventListener('touchend', (e) => { e.preventDefault(); keys.right = false; });
+
+        btnLeft.addEventListener('mousedown', () => { keys.left = true; });
+        btnLeft.addEventListener('mouseup', () => { keys.left = false; });
+        btnRight.addEventListener('mousedown', () => { keys.right = true; });
+        btnRight.addEventListener('mouseup', () => { keys.right = false; });
+
+        // Game UI Buttons
+        document.getElementById('startGameBtn').addEventListener('click', startGame);
+
+        document.getElementById('gamePauseBtn').addEventListener('click', () => {
+            if (gameState === 'PLAYING') {
+                gameState = 'PAUSED';
+                document.getElementById('gamePauseBtn').innerText = 'Resume';
+            } else if (gameState === 'PAUSED') {
+                gameState = 'PLAYING';
+                document.getElementById('gamePauseBtn').innerText = 'Pause';
+            }
+        });
+
+        document.getElementById('scrollToGameBtn').addEventListener('click', () => {
+            document.getElementById('gameContainerSection').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        /* ===================================================================
+         * PROJECT GALLERY SHOWCASE ENGINE
+         * =================================================================== */
         let currentCategory = 'All';
         let searchQuery = '';
 
-        // DOM Elements
         const projectsGrid = document.getElementById('projectsGrid');
         const emptyState = document.getElementById('emptyState');
         const searchInput = document.getElementById('searchInput');
-        const categoryFilterContainer = document.getElementById('categoryFilterContainer');
-        
-        // Theme Toggle Elements
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
-        const themeIconSun = document.getElementById('themeIconSun');
-        const themeIconMoon = document.getElementById('themeIconMoon');
 
-        // Theme Switcher Logic
-        themeToggleBtn.addEventListener('click', () => {
-            const isDark = document.documentElement.classList.toggle('dark');
-            themeIconSun.classList.toggle('hidden', !isDark);
-            themeIconMoon.classList.toggle('hidden', isDark);
-            localStorage.setItem('mahads_theme', isDark ? 'dark' : 'light');
-        });
-
-        // Load Saved Theme
-        if (localStorage.getItem('mahads_theme') === 'light') {
-            document.documentElement.classList.remove('dark');
-            themeIconSun.classList.remove('hidden');
-            themeIconMoon.classList.add('hidden');
-        }
-
-        // Render Project Cards Function
         function renderProjects() {
             const filtered = myProjects.filter(p => {
-                const matchesCategory = currentCategory === 'All' || p.category.toLowerCase() === currentCategory.toLowerCase();
-                const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                const matchesCat = currentCategory === 'All' || p.category.toLowerCase() === currentCategory.toLowerCase();
+                const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                                       p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                                       p.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
-                return matchesCategory && matchesSearch;
+                return matchesCat && matchesSearch;
             });
 
             if (filtered.length === 0) {
@@ -232,59 +835,71 @@
             emptyState.classList.add('hidden');
             emptyState.classList.remove('flex');
 
-            projectsGrid.innerHTML = filtered.map(p => {
-                const playUrl = p.demoUrl || p.liveUrl || '#';
-                return `
-                <div class="group bg-cream-100 dark:bg-matcha-900/40 hover:bg-cream-200/60 dark:hover:bg-matcha-900/80 border border-cream-300 dark:border-matcha-800/80 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-matcha-500/5 flex flex-col justify-between">
+            projectsGrid.innerHTML = filtered.map(p => `
+                <div class="group bg-cyber-card border border-cyber-border hover:border-matcha-500/60 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-matcha-500/10 flex flex-col justify-between">
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-matcha-200 dark:bg-matcha-800 text-matcha-800 dark:text-matcha-200">
+                            <span class="text-[10px] font-bold font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-matcha-500/20 text-matcha-400 border border-matcha-500/30">
                                 ${p.category}
                             </span>
+                            ${p.isFeatured ? '<span class="text-[10px] font-bold text-cyber-gold flex items-center gap-1"><i data-lucide="star" class="w-3 h-3 fill-current"></i> Featured</span>' : ''}
                         </div>
 
-                        <h3 class="text-lg font-bold text-cream-900 dark:text-white group-hover:text-matcha-600 dark:group-hover:text-matcha-300 transition-colors">
+                        <h3 class="text-base font-bold text-white group-hover:text-matcha-400 transition-colors">
                             ${p.title}
                         </h3>
 
-                        <p class="text-xs text-matcha-800 dark:text-matcha-300 leading-relaxed line-clamp-3">
+                        <p class="text-xs text-slate-300 leading-relaxed line-clamp-3">
                             ${p.description}
                         </p>
                     </div>
 
-                    <div class="pt-4 mt-4 border-t border-cream-200 dark:border-matcha-800/40 flex items-center justify-between gap-3">
-                        <div class="flex flex-wrap gap-1 max-w-[60%]">
-                            ${p.tags.map(t => `<span class="text-[10px] text-matcha-600 dark:text-matcha-400 font-mono">#${t}</span>`).join(' ')}
+                    <div class="pt-4 mt-4 border-t border-cyber-border/60 flex items-center justify-between gap-2">
+                        <div class="flex flex-wrap gap-1 max-w-[55%]">
+                            ${p.tags.map(t => `<span class="text-[10px] font-mono text-slate-400">#${t}</span>`).join(' ')}
                         </div>
 
                         <div class="flex items-center gap-2">
                             ${p.codeUrl ? `
-                                <a href="${p.codeUrl}" target="_blank" class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-cream-300 dark:border-matcha-800/60 text-matcha-800 dark:text-matcha-300 hover:bg-cream-200 dark:hover:bg-matcha-800 transition-colors">
+                                <a href="${p.codeUrl}" target="_blank" class="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-cyber-border text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
                                     Code
                                 </a>
                             ` : ''}
-                            <a href="${playUrl}" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-matcha-500 hover:bg-matcha-600 text-white transition-colors flex items-center gap-1 shadow-md shadow-matcha-500/20">
+                            <button onclick="handleLaunchProject('${p.demoUrl}')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-matcha-500 hover:bg-matcha-600 text-white transition-all flex items-center gap-1 shadow-md shadow-matcha-500/20">
                                 <span>Launch</span>
                                 <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
-            `}).join('');
+            `).join('');
 
             lucide.createIcons();
         }
 
+        function handleLaunchProject(url) {
+            if (url.startsWith('#')) {
+                const elem = document.querySelector(url);
+                if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+            } else if (url && url !== '#') {
+                window.open(url, '_blank');
+            } else {
+                // Default scroll to game
+                document.getElementById('gameContainerSection').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
         // Category Filter Handling
-        categoryFilterContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('category-btn')) {
-                document.querySelectorAll('.category-btn').forEach(btn => {
-                    btn.classList.remove('bg-matcha-500', 'text-white', 'shadow-md', 'shadow-matcha-500/20');
-                    btn.classList.add('text-matcha-700', 'dark:text-matcha-300');
+        document.getElementById('categoryFilterContainer').addEventListener('click', (e) => {
+            const btn = e.target.closest('.category-btn');
+            if (btn) {
+                document.querySelectorAll('.category-btn').forEach(b => {
+                    b.classList.remove('bg-matcha-500', 'text-white', 'shadow-md');
+                    b.classList.add('bg-cyber-card', 'border', 'border-cyber-border', 'text-slate-300');
                 });
-                e.target.classList.add('bg-matcha-500', 'text-white', 'shadow-md', 'shadow-matcha-500/20');
-                e.target.classList.remove('text-matcha-700', 'dark:text-matcha-300');
-                currentCategory = e.target.dataset.category;
+                btn.classList.add('bg-matcha-500', 'text-white', 'shadow-md');
+                btn.classList.remove('bg-cyber-card', 'border', 'border-cyber-border', 'text-slate-300');
+                currentCategory = btn.dataset.category;
                 renderProjects();
             }
         });
@@ -295,12 +910,79 @@
             renderProjects();
         });
 
-        // Initialize page icons and render
+        /* ===================================================================
+         * ADD NEW PROJECT MODAL LOGIC
+         * =================================================================== */
+        const addProjectModal = document.getElementById('addProjectModal');
+        const addProjectModalBtn = document.getElementById('addProjectModalBtn');
+        const closeAddProjectModal = document.getElementById('closeAddProjectModal');
+        const cancelAddProject = document.getElementById('cancelAddProject');
+        const addProjectForm = document.getElementById('addProjectForm');
+
+        addProjectModalBtn.addEventListener('click', () => {
+            addProjectModal.classList.remove('hidden');
+            addProjectModal.classList.add('flex');
+        });
+
+        function closeModal() {
+            addProjectModal.classList.add('hidden');
+            addProjectModal.classList.remove('flex');
+        }
+
+        closeAddProjectModal.addEventListener('click', closeModal);
+        cancelAddProject.addEventListener('click', closeModal);
+
+        addProjectForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newProj = {
+                id: 'proj-' + Date.now(),
+                title: document.getElementById('projTitle').value,
+                category: document.getElementById('projCategory').value,
+                description: document.getElementById('projDesc').value,
+                tags: document.getElementById('projTags').value.split(',').map(t => t.trim()).filter(Boolean),
+                demoUrl: document.getElementById('projDemoUrl').value || '#gameContainerSection',
+                codeUrl: document.getElementById('projCodeUrl').value || ''
+            };
+
+            myProjects.unshift(newProj);
+            localStorage.setItem('mahads_projects', JSON.stringify(myProjects));
+            renderProjects();
+            addProjectForm.reset();
+            closeModal();
+        });
+
+        /* ===================================================================
+         * AUDIO & THEME TOGGLE LOGIC
+         * =================================================================== */
+        const audioToggleBtn = document.getElementById('audioToggleBtn');
+        const audioIconOn = document.getElementById('audioIconOn');
+        const audioIconOff = document.getElementById('audioIconOff');
+
+        audioToggleBtn.addEventListener('click', () => {
+            audioEnabled = !audioEnabled;
+            audioIconOn.classList.toggle('hidden', !audioEnabled);
+            audioIconOff.classList.toggle('hidden', audioEnabled);
+        });
+
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIconSun = document.getElementById('themeIconSun');
+        const themeIconMoon = document.getElementById('themeIconMoon');
+
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            themeIconSun.classList.toggle('hidden', !isDark);
+            themeIconMoon.classList.toggle('hidden', isDark);
+            localStorage.setItem('mahads_theme', isDark ? 'dark' : 'light');
+        });
+
+        // Initialize Page
         window.onload = () => {
             lucide.createIcons();
+            resizeCanvas();
+            updateHUD();
             renderProjects();
+            requestAnimationFrame(gameLoop);
         };
     </script>
 </body>
 </html>
-```

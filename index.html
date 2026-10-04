@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Showcase - Apps & Games</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .glass-card {
+            backdrop-filter: blur(8px);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-zinc-950 text-slate-800 dark:text-zinc-200 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-zinc-800/80 bg-slate-50/80 dark:bg-zinc-950/80 glass-card transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2 text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
+                <span class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-400 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-brand-500/20">
+                    &lt;/&gt;
+                </span>
+                <span>Mahads <span class="text-brand-500">Repository</span></span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <!-- Add Project Button -->
+                <button onclick="openModal('addProjectModal')" class="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-full bg-brand-600 hover:bg-brand-500 text-white transition-all duration-200 shadow-sm hover:shadow-brand-500/20">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span class="hidden sm:inline">Add Project</span>
+                </button>
+
+                <!-- Dark / Light Shift Switcher -->
+                <button id="themeToggle" aria-label="Toggle Theme" class="p-2 rounded-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-500 transition-all duration-200">
+                    <i id="themeIconSun" class="fa-solid fa-sun text-amber-500 hidden text-sm"></i>
+                    <i id="themeIconMoon" class="fa-solid fa-moon text-indigo-400 text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow">
+        <!-- Hero Section -->
+        <section class="mb-12 text-center sm:text-left flex flex-col md:flex-row items-center justify-between gap-8 pb-10 border-b border-slate-200/60 dark:border-zinc-800/60">
+            <div class="max-w-2xl space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-medium">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    Available for projects & collaboration
+                </div>
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    Mahads <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-purple-500">Repository</span>
+                </h1>
+                <p class="text-slate-600 dark:text-zinc-400 text-base sm:text-lg leading-relaxed">
+                    Hello, my name is Mahad. This is my website where you can view my projects.
+                </p>
+                <div class="flex items-center justify-center sm:justify-start gap-4 pt-2">
+                    <a href="#projects" class="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-medium text-sm hover:opacity-90 transition-opacity">
+                        Explore Work
+                    </a>
+                    <button onclick="copyEmail()" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 font-medium text-sm transition-colors flex items-center gap-2">
+                        <i class="fa-regular fa-envelope text-xs"></i>
+                        <span id="emailBtnText">Get in Touch</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Profile Avatar / Visual Minimal Monogram -->
+            <div class="relative group">
+                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-1 shadow-xl shadow-brand-500/10 transform rotate-1 group-hover:rotate-0 transition-transform duration-300">
+                    <div class="w-full h-full rounded-[22px] bg-slate-900 flex flex-col items-center justify-center text-white p-4 text-center">
+                        <i class="fa-solid fa-gamepad text-3xl mb-1 text-brand-400"></i>
+                        <span class="font-bold text-sm tracking-wider">CREATOR</span>
+                        <span class="text-[10px] text-zinc-400 font-mono">LABS</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter & Search Controls -->
+        <section id="projects" class="space-y-6">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <!-- Filter Pills -->
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-2 sm:pb-0 scrollbar-none" id="filterContainer">
+                    <button onclick="filterCategory('all')" data-cat="all" class="filter-btn px-4 py-2 text-xs font-medium rounded-xl border transition-all duration-200 bg-brand-600 text-white border-brand-600 shadow-sm">
+                        All Projects
+                    </button>
+                    <button onclick="filterCategory('app')" data-cat="app" class="filter-btn px-4 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-200">
+                        Apps
+                    </button>
+                    <button onclick="filterCategory('game')" data-cat="game" class="filter-btn px-4 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-200">
+                        Games
+                    </button>
+                    <button onclick="filterCategory('web')" data-cat="web" class="filter-btn px-4 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-200">
+                        Websites
+                    </button>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative min-w-[220px]">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 dark:text-zinc-500"></i>
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search title or tags..." class="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 text-slate-800 dark:text-zinc-200 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
+                </div>
+            </div>
+
+            <!-- Dynamic Project Grid Container -->
+            <div id="projectGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+                <!-- Projects injected dynamically via JS -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-16 border border-dashed border-slate-200 dark:border-zinc-800 rounded-2xl">
+                <i class="fa-solid fa-cubes text-3xl text-slate-300 dark:text-zinc-700 mb-3"></i>
+                <h3 class="text-base font-semibold text-slate-700 dark:text-zinc-300">No projects found</h3>
+                <p class="text-xs text-slate-500 dark:text-zinc-500 mt-1">Try resetting your filter or search query.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200/80 dark:border-zinc-800/80 bg-white dark:bg-zinc-950 transition-colors py-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-zinc-500">
+            <p>© <span id="yearSpan"></span> Mahads Repository. Built with simplicity.</p>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com" target="_blank" class="hover:text-slate-800 dark:hover:text-zinc-200 transition-colors"><i class="fa-brands fa-github text-sm"></i></a>
+                <a href="https://twitter.com" target="_blank" class="hover:text-slate-800 dark:hover:text-zinc-200 transition-colors"><i class="fa-brands fa-x-twitter text-sm"></i></a>
+                <a href="https://linkedin.com" target="_blank" class="hover:text-slate-800 dark:hover:text-zinc-200 transition-colors"><i class="fa-brands fa-linkedin text-sm"></i></a>
+                <button onclick="resetDefaultProjects()" title="Reset mock data" class="hover:text-brand-500 transition-colors text-[11px] underline">Clear Projects</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal 1: Add/Edit Project -->
+    <div id="addProjectModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl transform scale-95 transition-transform duration-200">
+            <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-zinc-800">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white" id="modalTitle">Add New Project</h3>
+                <button onclick="closeModal('addProjectModal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <form id="projectForm" onsubmit="saveProject(event)" class="p-5 space-y-4">
+                <input type="hidden" id="editId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">Project Title *</label>
+                    <input type="text" id="pTitle" required placeholder="e.g. Pixel Dungeon Quest" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">Category *</label>
+                        <select id="pCategory" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="app">App</option>
+                            <option value="game">Game</option>
+                            <option value="web">Website</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">Status</label>
+                        <select id="pStatus" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="Live">Live</option>
+                            <option value="Beta">Beta</option>
+                            <option value="In Development">In Development</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">Short Description *</label>
+                    <textarea id="pDesc" required rows="3" placeholder="Briefly explain what your app or game does..." class="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">Tech Stack (comma separated)</label>
+                    <input type="text" id="pTags" placeholder="React, Three.js, Tailwind, Canvas" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">Live/Demo URL</label>
+                        <input type="url" id="pDemoUrl" placeholder="https://..." class="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">Source Code URL</label>
+                        <input type="url" id="pCodeUrl" placeholder="https://github.com/..." class="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="pt-3 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('addProjectModal')" class="px-4 py-2 text-xs font-medium text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-medium bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition-colors shadow-sm">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Interactive Preview Drawer / Frame -->
+    <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-md hidden opacity-0 transition-opacity duration-200">
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            <!-- Modal Bar -->
+            <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950">
+                <div class="flex items-center gap-3">
+                    <div class="flex gap-1.5">
+                        <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+                    </div>
+                    <span id="previewModalTitle" class="text-xs font-semibold text-slate-800 dark:text-zinc-200 truncate max-w-[200px] sm:max-w-none">Project Title</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <a id="previewExternalBtn" href="#" target="_blank" class="px-3 py-1 text-xs font-medium bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition-colors flex items-center gap-1.5">
+                        <span>Open Live Site</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                    <button onclick="closeModal('previewModal')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 rounded-lg">
+                        <i class="fa-solid fa-xmark text-base"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body / Content / Frame -->
+            <div class="flex-grow bg-slate-100 dark:bg-zinc-950 relative flex items-center justify-center overflow-hidden" id="previewContainer">
+                <iframe id="previewIframe" class="w-full h-full border-0 hidden" title="Project Preview"></iframe>
+                <div id="previewFallback" class="p-8 text-center max-w-md space-y-4">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-800 dark:text-zinc-100" id="fallbackTitle">Project Demo</h4>
+                    <p class="text-xs text-slate-500 dark:text-zinc-400" id="fallbackDesc">Click the link below to launch or view the repository directly.</p>
+                    <div class="flex items-center justify-center gap-3 pt-2">
+                        <a id="fallbackLiveLink" href="#" target="_blank" class="px-4 py-2 bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs font-medium rounded-xl hover:opacity-90">
+                            Visit Website
+                        </a>
+                        <a id="fallbackCodeLink" href="#" target="_blank" class="px-4 py-2 border border-slate-300 dark:border-zinc-700 text-xs font-medium rounded-xl hover:bg-slate-200 dark:hover:bg-zinc-800">
+                            Source Code
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 translate-y-10 opacity-0 transition-all duration-300 pointer-events-none px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs font-medium shadow-xl flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-emerald-400 dark:text-emerald-600"></i>
+        <span id="toastMsg">Action completed</span>
+    </div>
+
+    <script>
+        // Default Mock Projects Dataset - Set to empty for Mahad's Repository
+        const DEFAULT_PROJECTS = [];
+
+        let projects = [];
+        let activeCategory = 'all';
+        let searchQuery = '';
+
+        // Dark / Light Mode Switch Handler
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                document.documentElement.classList.add('dark');
+                updateThemeIcons(true);
+            } else {
+                document.documentElement.classList.remove('dark');
+                updateThemeIcons(false);
+            }
+        }
+
+        function updateThemeIcons(isDark) {
+            const sunIcon = document.getElementById('themeIconSun');
+            const moonIcon = document.getElementById('themeIconMoon');
+            if (isDark) {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcons(isDark);
+        });
+
+        // Load Data from LocalStorage or Defaults
+        function loadProjects() {
+            const stored = localStorage.getItem('my_dev_projects');
+            if (stored) {
+                try {
+                    projects = JSON.parse(stored);
+                } catch(e) {
+                    projects = [...DEFAULT_PROJECTS];
+                }
+            } else {
+                projects = [...DEFAULT_PROJECTS];
+            }
+            renderProjects();
+        }
+
+        function saveProjectsToStorage() {
+            localStorage.setItem('my_dev_projects', JSON.stringify(projects));
+        }
+
+        // Render Cards into DOM
+        function renderProjects() {
+            const grid = document.getElementById('projectGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            const filtered = projects.filter(p => {
+                const matchesCat = activeCategory === 'all' || p.category === activeCategory;
+                const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      p.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            grid.innerHTML = filtered.map(p => {
+                const iconClass = p.icon || (p.category === 'game' ? 'fa-gamepad' : p.category === 'app' ? 'fa-mobile-screen' : 'fa-globe');
+                const grad = p.colorGrad || 'from-brand-500 to-indigo-600';
+
+                return `
+                <article class="group relative flex flex-col rounded-2xl border border-slate-200/80 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 p-5 hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-xl dark:hover:shadow-black/40">
+                    <!-- Top Header of Card -->
+                    <div class="flex items-start justify-between gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${grad} flex items-center justify-center text-white shadow-md shadow-brand-500/10">
+                            <i class="fa-solid ${iconClass} text-base"></i>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide border uppercase ${
+                                p.status === 'Live' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' :
+                                p.status === 'Beta' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20' :
+                                'bg-slate-500/10 text-slate-600 dark:text-zinc-400 border-slate-500/20'
+                            }">
+                                ${p.status || 'Live'}
+                            </span>
+                            <button onclick="deleteProject('${p.id}')" title="Delete Project" class="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-500 transition-all">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Title & Description -->
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors">
+                        ${escapeHtml(p.title)}
+                    </h3>
+                    <p class="text-xs text-slate-600 dark:text-zinc-400 line-clamp-2 leading-relaxed mb-4 flex-grow">
+                        ${escapeHtml(p.description)}
+                    </p>
+
+                    <!-- Tech Stack Tags -->
+                    <div class="flex flex-wrap gap-1.5 mb-5">
+                        ${p.tags.map(tag => `
+                            <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800/80 text-slate-600 dark:text-zinc-400 text-[11px] font-mono">
+                                ${escapeHtml(tag)}
+                            </span>
+                        `).join('')}
+                    </div>
+
+                    <!-- Action Links Footer -->
+                    <div class="pt-3 border-t border-slate-100 dark:border-zinc-800/60 flex items-center justify-between mt-auto">
+                        <button onclick="launchPreview('${p.id}')" class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-500 flex items-center gap-1">
+                            <span>Preview</span>
+                            <i class="fa-solid fa-angle-right text-[10px] group-hover:translate-x-0.5 transition-transform"></i>
+                        </button>
+
+                        <div class="flex items-center gap-2">
+                            ${p.codeUrl ? `
+                                <a href="${escapeHtml(p.codeUrl)}" target="_blank" title="Source Code" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors">
+                                    <i class="fa-brands fa-github text-sm"></i>
+                                </a>
+                            ` : ''}
+                            ${p.demoUrl ? `
+                                <a href="${escapeHtml(p.demoUrl)}" target="_blank" title="Direct Link" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                </article>
+                `;
+            }).join('');
+        }
+
+        // Category Filter
+        function filterCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-cat') === cat) {
+                    btn.className = 'filter-btn px-4 py-2 text-xs font-medium rounded-xl border transition-all duration-200 bg-brand-600 text-white border-brand-600 shadow-sm';
+                } else {
+                    btn.className = 'filter-btn px-4 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-200';
+                }
+            });
+            renderProjects();
+        }
+
+        // Search Input
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value.trim();
+            renderProjects();
+        }
+
+        // Modal Utilities
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.remove('scale-100');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        // Add / Save Project Form Handling
+        function saveProject(e) {
+            e.preventDefault();
+            const title = document.getElementById('pTitle').value;
+            const category = document.getElementById('pCategory').value;
+            const status = document.getElementById('pStatus').value;
+            const description = document.getElementById('pDesc').value;
+            const tagsRaw = document.getElementById('pTags').value;
+            const demoUrl = document.getElementById('pDemoUrl').value;
+            const codeUrl = document.getElementById('pCodeUrl').value;
+
+            const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [category];
+            const gradients = [
+                'from-purple-500 to-indigo-600',
+                'from-blue-500 to-cyan-500',
+                'from-emerald-500 to-teal-600',
+                'from-amber-500 to-rose-500',
+                'from-fuchsia-500 to-pink-500'
+            ];
+            const randomGrad = gradients[Math.floor(Math.random() * gradients.length)];
+
+            const newProj = {
+                id: Date.now().toString(),
+                title,
+                category,
+                status,
+                description,
+                tags,
+                demoUrl,
+                codeUrl,
+                colorGrad: randomGrad,
+                icon: category === 'game' ? 'fa-gamepad' : category === 'app' ? 'fa-mobile-screen' : 'fa-globe'
+            };
+
+            projects.unshift(newProj);
+            saveProjectsToStorage();
+            renderProjects();
+            
+            // Reset form & Close
+            document.getElementById('projectForm').reset();
+            closeModal('addProjectModal');
+            showToast('Project added successfully!');
+        }
+
+        // Delete Project
+        function deleteProject(id) {
+            projects = projects.filter(p => p.id !== id);
+            saveProjectsToStorage();
+            renderProjects();
+            showToast('Project removed.');
+        }
+
+        // Preview Modal Launcher
+        function launchPreview(id) {
+            const project = projects.find(p => p.id === id);
+            if (!project) return;
+
+            document.getElementById('previewModalTitle').textContent = project.title;
+            const externalBtn = document.getElementById('previewExternalBtn');
+            externalBtn.href = project.demoUrl || project.codeUrl || '#';
+
+            const iframe = document.getElementById('previewIframe');
+            const fallback = document.getElementById('previewFallback');
+
+            // Attempting iframe view or showing direct fallback card
+            if (project.demoUrl && project.demoUrl.startsWith('http') && !project.demoUrl.includes('example.com')) {
+                iframe.src = project.demoUrl;
+                iframe.classList.remove('hidden');
+                fallback.classList.add('hidden');
+            } else {
+                iframe.src = 'about:blank';
+                iframe.classList.add('hidden');
+                fallback.classList.remove('hidden');
+
+                document.getElementById('fallbackTitle').textContent = project.title;
+                document.getElementById('fallbackDesc').textContent = project.description;
+                document.getElementById('fallbackLiveLink').href = project.demoUrl || '#';
+                document.getElementById('fallbackCodeLink').href = project.codeUrl || '#';
+            }
+
+            openModal('previewModal');
+        }
+
+        // Reset Data
+        function resetDefaultProjects() {
+            projects = [...DEFAULT_PROJECTS];
+            saveProjectsToStorage();
+            renderProjects();
+            showToast('Reset to default projects');
+        }
+
+        // Copy Email function
+        function copyEmail() {
+            const email = "hello@yourdomain.com";
+            const btnText = document.getElementById('emailBtnText');
+            
+            // execCommand copy fallback
+            const el = document.createElement('textarea');
+            el.value = email;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            btnText.textContent = "Copied to Clipboard!";
+            showToast("Copied email to clipboard!");
+            setTimeout(() => {
+                btnText.textContent = "Get in Touch";
+            }, 2500);
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('translate-y-10', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+            }, 3000);
+        }
+
+        // Helper string escaper
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+            });
+        }
+
+        // Init on Window Load
+        window.onload = function() {
+            initTheme();
+            loadProjects();
+            document.getElementById('yearSpan').textContent = new Date().getFullYear();
+        };
+    </script>
+</body>
+</html>

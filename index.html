@@ -295,8 +295,21 @@
     </div>
 
     <script>
-        // Default Mock Projects Dataset - Set to empty for Mahad's Repository
-        const DEFAULT_PROJECTS = [];
+        // Default Projects Dataset - Snake added so the Games section shows it
+        const DEFAULT_PROJECTS = [
+            {
+                id: 'snake',
+                title: 'Snake',
+                category: 'game',
+                status: 'Live',
+                description: 'The classic snake game. Eat the food, grow longer, and avoid the walls and yourself.',
+                tags: ['HTML', 'CSS', 'JavaScript', 'Canvas'],
+                demoUrl: 'https://manzom428-sketch.github.io/mahad-1283/game/game.html',
+                codeUrl: 'https://github.com/manzom428-sketch/mahad-1283/blob/main/game/game.html',
+                colorGrad: 'from-emerald-500 to-teal-600',
+                icon: 'fa-gamepad'
+            }
+        ];
 
         let projects = [];
         let activeCategory = 'all';
@@ -335,11 +348,13 @@
         });
 
         // Load Data from LocalStorage or Defaults
+        // Note: a saved EMPTY list is ignored so the default projects always appear
         function loadProjects() {
             const stored = localStorage.getItem('my_dev_projects');
             if (stored) {
                 try {
-                    projects = JSON.parse(stored);
+                    const parsed = JSON.parse(stored);
+                    projects = (Array.isArray(parsed) && parsed.length > 0) ? parsed : [...DEFAULT_PROJECTS];
                 } catch(e) {
                     projects = [...DEFAULT_PROJECTS];
                 }

@@ -171,7 +171,7 @@
                 <a href="https://github.com" target="_blank" class="hover:text-slate-800 dark:hover:text-zinc-200 transition-colors"><i class="fa-brands fa-github text-sm"></i></a>
                 <a href="https://twitter.com" target="_blank" class="hover:text-slate-800 dark:hover:text-zinc-200 transition-colors"><i class="fa-brands fa-x-twitter text-sm"></i></a>
                 <a href="https://linkedin.com" target="_blank" class="hover:text-slate-800 dark:hover:text-zinc-200 transition-colors"><i class="fa-brands fa-linkedin text-sm"></i></a>
-                <button onclick="resetDefaultProjects()" title="Reset mock data" class="hover:text-brand-500 transition-colors text-[11px] underline">Clear Projects</button>
+                <button onclick="resetDefaultProjects()" title="Reset mock data" class="hover:text-brand-500 transition-colors text-[11px] underline">Reset Projects</button>
             </div>
         </div>
     </footer>
@@ -295,8 +295,41 @@
     </div>
 
     <script>
-        // Default Projects Dataset - Snake added so the Games section shows it
         const DEFAULT_PROJECTS = [
+            {
+                id: 'petshare',
+                title: 'PetShare',
+                category: 'app',
+                status: 'Live',
+                description: 'A platform to connect pet owners and pet lovers to share pet care, playdates, and adoption updates.',
+                tags: ['HTML', 'CSS', 'JavaScript'],
+                demoUrl: '',
+                codeUrl: 'https://github.com',
+                colorGrad: 'from-orange-400 to-amber-500',
+                icon: 'fa-paw',
+                inlineCode: `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>
+                            body { font-family: sans-serif; text-align: center; padding: 40px; background: #fff7ed; color: #9a3412; }
+                            .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); max-width: 300px; margin: 20px auto; }
+                            button { background: #f97316; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+                            button:hover { background: #ea580c; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>🐾 Welcome to PetShare</h1>
+                        <p>Connecting pets with loving caregivers nearby.</p>
+                        <div class="card">
+                            <h3>Buddy (Golden Retriever)</h3>
+                            <p>Needs a buddy for weekend walks!</p>
+                            <button onclick="alert('Connection request sent to Buddy owner!')">Offer Playdate</button>
+                        </div>
+                    </body>
+                    </html>
+                `
+            },
             {
                 id: 'snake',
                 title: 'Snake',
@@ -315,7 +348,11 @@
         let activeCategory = 'all';
         let searchQuery = '';
 
-        // Dark / Light Mode Switch Handler
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -347,8 +384,6 @@
             updateThemeIcons(isDark);
         });
 
-        // Load Data from LocalStorage or Defaults
-        // Note: a saved EMPTY list is ignored so the default projects always appear
         function loadProjects() {
             const stored = localStorage.getItem('my_dev_projects');
             if (stored) {
@@ -368,7 +403,6 @@
             localStorage.setItem('my_dev_projects', JSON.stringify(projects));
         }
 
-        // Render Cards into DOM
         function renderProjects() {
             const grid = document.getElementById('projectGrid');
             const emptyState = document.getElementById('emptyState');
@@ -395,7 +429,6 @@
 
                 return `
                 <article class="group relative flex flex-col rounded-2xl border border-slate-200/80 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 p-5 hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-xl dark:hover:shadow-black/40">
-                    <!-- Top Header of Card -->
                     <div class="flex items-start justify-between gap-3 mb-4">
                         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${grad} flex items-center justify-center text-white shadow-md shadow-brand-500/10">
                             <i class="fa-solid ${iconClass} text-base"></i>
@@ -414,7 +447,6 @@
                         </div>
                     </div>
 
-                    <!-- Title & Description -->
                     <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors">
                         ${escapeHtml(p.title)}
                     </h3>
@@ -422,7 +454,6 @@
                         ${escapeHtml(p.description)}
                     </p>
 
-                    <!-- Tech Stack Tags -->
                     <div class="flex flex-wrap gap-1.5 mb-5">
                         ${p.tags.map(tag => `
                             <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800/80 text-slate-600 dark:text-zinc-400 text-[11px] font-mono">
@@ -431,7 +462,6 @@
                         `).join('')}
                     </div>
 
-                    <!-- Action Links Footer -->
                     <div class="pt-3 border-t border-slate-100 dark:border-zinc-800/60 flex items-center justify-between mt-auto">
                         <button onclick="launchPreview('${p.id}')" class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-500 flex items-center gap-1">
                             <span>Preview</span>
@@ -456,7 +486,6 @@
             }).join('');
         }
 
-        // Category Filter
         function filterCategory(cat) {
             activeCategory = cat;
             document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -469,13 +498,11 @@
             renderProjects();
         }
 
-        // Search Input
         function handleSearch() {
             searchQuery = document.getElementById('searchInput').value.trim();
             renderProjects();
         }
 
-        // Modal Utilities
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             modal.classList.remove('hidden');
@@ -496,7 +523,6 @@
             }, 200);
         }
 
-        // Add / Save Project Form Handling
         function saveProject(e) {
             e.preventDefault();
             const title = document.getElementById('pTitle').value;
@@ -512,13 +538,12 @@
                 'from-purple-500 to-indigo-600',
                 'from-blue-500 to-cyan-500',
                 'from-emerald-500 to-teal-600',
-                'from-amber-500 to-rose-500',
-                'from-fuchsia-500 to-pink-500'
+                'from-amber-500 to-orange-600'
             ];
-            const randomGrad = gradients[Math.floor(Math.random() * gradients.length)];
+            const colorGrad = gradients[Math.floor(Math.random() * gradients.length)];
 
-            const newProj = {
-                id: Date.now().toString(),
+            const newProject = {
+                id: 'proj_' + Date.now(),
                 title,
                 category,
                 status,
@@ -526,60 +551,25 @@
                 tags,
                 demoUrl,
                 codeUrl,
-                colorGrad: randomGrad,
+                colorGrad,
                 icon: category === 'game' ? 'fa-gamepad' : category === 'app' ? 'fa-mobile-screen' : 'fa-globe'
             };
 
-            projects.unshift(newProj);
+            projects.unshift(newProject);
             saveProjectsToStorage();
             renderProjects();
-            
-            // Reset form & Close
-            document.getElementById('projectForm').reset();
             closeModal('addProjectModal');
-            showToast('Project added successfully!');
+            document.getElementById('projectForm').reset();
+            showToast('Project created successfully');
         }
 
-        // Delete Project
         function deleteProject(id) {
             projects = projects.filter(p => p.id !== id);
             saveProjectsToStorage();
             renderProjects();
-            showToast('Project removed.');
+            showToast('Project deleted');
         }
 
-        // Preview Modal Launcher
-        function launchPreview(id) {
-            const project = projects.find(p => p.id === id);
-            if (!project) return;
-
-            document.getElementById('previewModalTitle').textContent = project.title;
-            const externalBtn = document.getElementById('previewExternalBtn');
-            externalBtn.href = project.demoUrl || project.codeUrl || '#';
-
-            const iframe = document.getElementById('previewIframe');
-            const fallback = document.getElementById('previewFallback');
-
-            // Attempting iframe view or showing direct fallback card
-            if (project.demoUrl && project.demoUrl.startsWith('http') && !project.demoUrl.includes('example.com')) {
-                iframe.src = project.demoUrl;
-                iframe.classList.remove('hidden');
-                fallback.classList.add('hidden');
-            } else {
-                iframe.src = 'about:blank';
-                iframe.classList.add('hidden');
-                fallback.classList.remove('hidden');
-
-                document.getElementById('fallbackTitle').textContent = project.title;
-                document.getElementById('fallbackDesc').textContent = project.description;
-                document.getElementById('fallbackLiveLink').href = project.demoUrl || '#';
-                document.getElementById('fallbackCodeLink').href = project.codeUrl || '#';
-            }
-
-            openModal('previewModal');
-        }
-
-        // Reset Data
         function resetDefaultProjects() {
             projects = [...DEFAULT_PROJECTS];
             saveProjectsToStorage();
@@ -587,50 +577,61 @@
             showToast('Reset to default projects');
         }
 
-        // Copy Email function
+        function launchPreview(id) {
+            const project = projects.find(p => p.id === id);
+            if (!project) return;
+
+            document.getElementById('previewModalTitle').innerText = project.title;
+            const iframe = document.getElementById('previewIframe');
+            const fallback = document.getElementById('previewFallback');
+            const extBtn = document.getElementById('previewExternalBtn');
+
+            extBtn.href = project.demoUrl || project.codeUrl || '#';
+
+            if (project.inlineCode) {
+                iframe.srcdoc = project.inlineCode;
+                iframe.removeAttribute('src');
+                iframe.classList.remove('hidden');
+                fallback.classList.add('hidden');
+            } else if (project.demoUrl) {
+                iframe.removeAttribute('srcdoc');
+                iframe.src = project.demoUrl;
+                iframe.classList.remove('hidden');
+                fallback.classList.add('hidden');
+            } else {
+                iframe.removeAttribute('srcdoc');
+                iframe.src = '';
+                iframe.classList.add('hidden');
+                fallback.classList.remove('hidden');
+                document.getElementById('fallbackTitle').innerText = project.title;
+                document.getElementById('fallbackDesc').innerText = project.description;
+                document.getElementById('fallbackLiveLink').href = project.demoUrl || '#';
+                document.getElementById('fallbackCodeLink').href = project.codeUrl || '#';
+            }
+
+            openModal('previewModal');
+        }
+
         function copyEmail() {
-            const email = "hello@yourdomain.com";
-            const btnText = document.getElementById('emailBtnText');
-            
-            // execCommand copy fallback
-            const el = document.createElement('textarea');
-            el.value = email;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-
-            btnText.textContent = "Copied to Clipboard!";
-            showToast("Copied email to clipboard!");
-            setTimeout(() => {
-                btnText.textContent = "Get in Touch";
-            }, 2500);
-        }
-
-        // Toast Helper
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = msg;
-            toast.classList.remove('translate-y-10', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-10', 'opacity-0');
-            }, 3000);
-        }
-
-        // Helper string escaper
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>"']/g, function(m) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+            navigator.clipboard.writeText('hello@example.com').then(() => {
+                showToast('Email address copied!');
+            }).catch(() => {
+                showToast('Get in touch via socials below');
             });
         }
 
-        // Init on Window Load
-        window.onload = function() {
-            initTheme();
-            loadProjects();
-            document.getElementById('yearSpan').textContent = new Date().getFullYear();
-        };
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-10');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-10');
+            }, 2500);
+        }
+
+        document.getElementById('yearSpan').innerText = new Date().getFullYear();
+        initTheme();
+        loadProjects();
     </script>
 </body>
 </html>

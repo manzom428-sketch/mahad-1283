@@ -1,3 +1,0 @@
-// Supabase Configuration
-const SUPABASE_URL = "https://shgdmvdgqybllkeepwjw.supabase.co/rest/v1/";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoZ2RtdmRncXlibGxrZWVwd2p3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMDY2MDIsImV4cCI6MjEwNjc4MjYwMn0.PQ2jj1Lutr5clXiFs1aHLA_7rUVdRbQVlbW9vTdbg2I";

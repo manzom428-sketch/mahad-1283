@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PetScore</title>
+  <style>
+    :root {
+      --ink: #14213d;
+      --paper: #f3f7fb;
+      --card: #ffffff;
+      --line: #d5deea;
+      --muted: #5b6b82;
+      --score: #ffb703;
+      --action: #1d4ed8;
+      --action-dark: #1e3a8a;
+      --error: #b42318;
+      --error-bg: #fdecea;
+      --ok: #05603a;
+      --ok-bg: #e7f6ee;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    [hidden] { display: none !important; }
+    .wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .panel {
+      width: 100%;
+      max-width: 420px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .badge {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--score);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 32px;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .card h2 {
+      margin: 0 0 16px;
+      font-size: 20px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      font: inherit;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      margin-bottom: 14px;
+    }
+    input:focus-visible, button:focus-visible {
+      outline: 3px solid #93b4ff;
+      outline-offset: 1px;
+    }
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin: -6px 0 14px;
+    }
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+    .primary {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: var(--action);
+      color: #fff;
+      font-weight: 700;
+    }
+    .primary:hover { background: var(--action-dark); }
+    .primary:disabled { opacity: 0.6; cursor: wait; }
+    .linklike {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--action);
+      font-weight: 700;
+      text-decoration: underline;
+    }
+    .switch {
+      margin: 16px 0 0;
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .msg {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+    .msg.error { background: var(--error-bg); color: var(--error); }
+    .msg.ok { background: var(--ok-bg); color: var(--ok); }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 20px;
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar .brand { margin: 0; }
+    .topbar .badge { width: 40px; height: 40px; font-size: 16px; }
+    .topbar .brand h1 { font-size: 22px; }
+    .secondary {
+      padding: 9px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .secondary:hover { background: var(--paper); }
+    .home-body {
+      max-width: 640px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+    .email-line { color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <!-- Screen 1: Sign in / Sign up -->
+  <div id="screen-auth" class="wrap" hidden>
+    <div class="panel">
+      <div class="brand">
+        <div class="badge">10</div>
+        <div>
+          <h1>PetScore</h1>
+          <p>Post your pet. Get rated 1 to 10.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 id="auth-title">Sign in</h2>
+        <div id="auth-message" class="msg" hidden role="alert"></div>
+
+        <label for="auth-email">Email</label>
+        <input id="auth-email" type="email" autocomplete="email" placeholder="you@gmail.com">
+
+        <label for="auth-password">Password</label>
+        <input id="auth-password" type="password" autocomplete="current-password">
+        <p id="auth-hint" class="hint" hidden>At least 8 characters, with one uppercase letter, one lowercase letter, and one number.</p>
+
+        <button id="auth-submit" class="primary" type="button">Sign in</button>
+
+        <p class="switch">
+          <span id="auth-switch-text">New here?</span>
+          <button id="auth-switch" class="linklike" type="button">Create an account</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signed-in placeholder (the main feed arrives in a later step) -->
+  <div id="screen-home" hidden>
+    <div class="topbar">
+      <div class="brand">
+        <div class="badge">10</div>
+        <h1>PetScore</h1>
+      </div>
+      <button id="signout-btn" class="secondary" type="button">Sign out</button>
+    </div>
+    <div class="home-body">
+      <div class="card">
+        <h2>You're signed in</h2>
+        <p class="email-line" id="home-email"></p>
+        <p>Sign-in works. The feed and photo uploads come next.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

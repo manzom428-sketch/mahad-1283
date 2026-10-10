@@ -110,7 +110,11 @@ async function handleSubmit() {
       if (error) showMessage(friendlyError(error), "error");
       // On success, onAuthStateChange switches the screen.
     } else {
-      const { data, error } = await sb.auth.signUp({ email, password });
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: new URL("./", window.location.href).href }
+      });
       if (error) {
         showMessage(friendlyError(error), "error");
       } else if (!data.session) {

@@ -611,7 +611,19 @@ $("settings-save").addEventListener("click", saveSettingsUsername);
 $("password-save").addEventListener("click", changePassword);
 
 // ---------- Start ----------
+// If a sign-in (such as GitHub) failed, Supabase sends the person back with the
+// reason in the address bar. Show it instead of failing silently.
+function showSignInErrorFromUrl() {
+  const fromHash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const fromQuery = new URLSearchParams(window.location.search);
+  const reason = fromHash.get("error_description") || fromQuery.get("error_description");
+  if (!reason) return;
+  showMsg($("auth-message"), "Sign-in problem: " + reason, "error");
+  history.replaceState(null, "", window.location.pathname);
+}
+
 setAuthMode("signin");
+showSignInErrorFromUrl();
 sb.auth.onAuthStateChange((_event, session) => {
   // Run outside the callback so Supabase calls inside handleSession cannot deadlock.
   setTimeout(() => handleSession(session), 0);

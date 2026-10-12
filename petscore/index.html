@@ -29,146 +29,121 @@
       line-height: 1.5;
     }
     [hidden] { display: none !important; }
-    .wrap {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
-    }
-    .panel {
-      width: 100%;
-      max-width: 420px;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
+    button { font: inherit; cursor: pointer; }
+
+    /* ---------- Shared pieces ---------- */
+    .wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+    .panel { width: 100%; max-width: 420px; }
+    .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
     .badge {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: var(--score);
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 22px;
-      flex-shrink: 0;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--score); color: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 22px; flex-shrink: 0;
     }
-    .brand h1 {
-      margin: 0;
-      font-size: 32px;
-      letter-spacing: -0.5px;
-      line-height: 1.1;
+    .brand h1 { margin: 0; font-size: 32px; letter-spacing: -0.5px; line-height: 1.1; }
+    .brand p { margin: 2px 0 0; color: var(--muted); font-size: 15px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
+    .card h2 { margin: 0 0 16px; font-size: 20px; }
+    label, .label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+    input[type="email"], input[type="password"], input[type="text"], input[type="search"], textarea {
+      width: 100%; font: inherit; padding: 11px 12px;
+      border: 1px solid var(--line); border-radius: 8px;
+      background: #fff; color: var(--ink); margin-bottom: 14px;
     }
-    .brand p {
-      margin: 2px 0 0;
-      color: var(--muted);
-      font-size: 15px;
+    textarea { resize: vertical; }
+    input[type="file"] { width: 100%; margin-bottom: 14px; font: inherit; }
+    input:focus-visible, textarea:focus-visible, button:focus-visible, select:focus-visible {
+      outline: 3px solid #93b4ff; outline-offset: 1px;
     }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 24px;
-    }
-    .card h2 {
-      margin: 0 0 16px;
-      font-size: 20px;
-    }
-    label {
-      display: block;
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
-    input[type="email"], input[type="password"] {
-      width: 100%;
-      font: inherit;
-      padding: 11px 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
-      color: var(--ink);
-      margin-bottom: 14px;
-    }
-    input:focus-visible, button:focus-visible {
-      outline: 3px solid #93b4ff;
-      outline-offset: 1px;
-    }
-    .hint {
-      font-size: 13px;
-      color: var(--muted);
-      margin: -6px 0 14px;
-    }
-    button {
-      font: inherit;
-      cursor: pointer;
-    }
+    .hint { font-size: 13px; color: var(--muted); margin: -6px 0 14px; }
     .primary {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: var(--action);
-      color: #fff;
-      font-weight: 700;
+      width: 100%; padding: 12px; border: none; border-radius: 8px;
+      background: var(--action); color: #fff; font-weight: 700;
     }
     .primary:hover { background: var(--action-dark); }
     .primary:disabled { opacity: 0.6; cursor: wait; }
-    .linklike {
-      background: none;
-      border: none;
-      padding: 0;
-      color: var(--action);
-      font-weight: 700;
-      text-decoration: underline;
+    .secondary {
+      padding: 9px 14px; border: 1px solid var(--line); border-radius: 8px;
+      background: #fff; color: var(--ink); font-weight: 600;
     }
-    .switch {
-      margin: 16px 0 0;
-      text-align: center;
-      font-size: 14px;
-      color: var(--muted);
+    .secondary:hover { background: var(--paper); }
+    .github-btn {
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 12px; border: none; border-radius: 8px;
+      background: #24292f; color: #fff; font-weight: 700;
     }
-    .msg {
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-bottom: 14px;
-    }
+    .github-btn:hover { background: #000; }
+    .github-btn svg { width: 20px; height: 20px; fill: currentColor; }
+    .divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; margin: 18px 0; }
+    .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .linklike { background: none; border: none; padding: 0; color: var(--action); font-weight: 700; text-decoration: underline; }
+    .switch { margin: 16px 0 0; text-align: center; font-size: 14px; color: var(--muted); }
+    .msg { padding: 10px 12px; border-radius: 8px; font-size: 14px; margin-bottom: 14px; }
     .msg.error { background: var(--error-bg); color: var(--error); }
     .msg.ok { background: var(--ok-bg); color: var(--ok); }
+
+    /* ---------- App shell ---------- */
     .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 14px 20px;
-      background: var(--card);
-      border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 16px;
+      padding: 12px 20px; background: var(--card); border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 5;
     }
     .topbar .brand { margin: 0; }
     .topbar .badge { width: 40px; height: 40px; font-size: 16px; }
     .topbar .brand h1 { font-size: 22px; }
-    .secondary {
-      padding: 9px 14px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
-      color: var(--ink);
-      font-weight: 600;
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tab {
+      padding: 8px 14px; border: none; border-radius: 999px;
+      background: transparent; color: var(--muted); font-weight: 700;
     }
-    .secondary:hover { background: var(--paper); }
-    .home-body {
-      max-width: 640px;
-      margin: 40px auto;
-      padding: 0 16px;
+    .tab:hover { background: var(--paper); }
+    .tab.active { background: var(--ink); color: #fff; }
+    .who { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+    .main { max-width: 640px; margin: 24px auto 60px; padding: 0 16px; }
+    .main .card { margin-bottom: 20px; }
+    .status { text-align: center; color: var(--muted); padding: 30px 0; }
+
+    /* ---------- Feed ---------- */
+    .post { padding: 0; overflow: hidden; }
+    .avg-bar {
+      display: flex; align-items: baseline; gap: 10px;
+      padding: 12px 18px; background: var(--ink); color: #fff;
     }
-    .email-line { color: var(--muted); font-size: 14px; }
+    .avg-num { font-size: 30px; font-weight: 800; color: var(--score); line-height: 1; }
+    .avg-of { color: #c3cde0; font-size: 14px; }
+    .avg-count { margin-left: auto; color: #c3cde0; font-size: 13px; }
+    .photo { display: block; width: 100%; max-height: 520px; object-fit: contain; background: #0b1426; }
+    .photo-missing { padding: 40px 16px; text-align: center; background: #e8eef7; color: var(--muted); }
+    .post-body { padding: 16px 18px 18px; }
+    .post-title { margin: 0; font-size: 20px; }
+    .meta { margin: 2px 0 8px; color: var(--muted); font-size: 13px; }
+    .caption { margin: 0 0 12px; overflow-wrap: anywhere; }
+    .delete-btn { float: right; padding: 4px 10px; font-size: 13px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--error); }
+    .scores { list-style: none; margin: 0 0 14px; padding: 12px 0 0; border-top: 1px solid var(--line); }
+    .scores li { padding: 6px 0; font-size: 14px; overflow-wrap: anywhere; }
+    .score-pill {
+      display: inline-block; min-width: 44px; text-align: center; margin: 0 6px;
+      padding: 1px 8px; border-radius: 999px; background: var(--score); color: var(--ink); font-weight: 800; font-size: 13px;
+    }
+    .rate-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .rate-row input[type="range"] { flex: 1; accent-color: var(--action); }
+    .rate-out { min-width: 44px; text-align: center; font-weight: 800; font-size: 18px; }
+    .rate-form input[type="text"] { margin-bottom: 10px; }
+    .rate-form .primary { width: auto; padding: 10px 18px; }
+
+    /* ---------- Upload ---------- */
+    .preview { display: block; max-width: 100%; max-height: 280px; border-radius: 10px; margin: 0 0 14px; }
+    fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 0 0 14px; }
+    legend { font-weight: 600; font-size: 14px; padding: 0 6px; }
+    .radio { display: flex; align-items: center; gap: 8px; margin: 4px 0; font-weight: 400; }
+    .friend-list { max-height: 220px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 10px; }
+    .user-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin: 0; font-weight: 400; border-bottom: 1px solid var(--line); }
+    .user-row:last-child { border-bottom: none; }
+    .user-row:hover { background: var(--paper); }
+    .friend-count { font-size: 13px; color: var(--muted); margin: 0 0 12px; }
+    .empty-note { padding: 14px; color: var(--muted); font-size: 14px; }
+    .info-line { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
   </style>
 </head>
 <body>
@@ -188,6 +163,13 @@
         <h2 id="auth-title">Sign in</h2>
         <div id="auth-message" class="msg" hidden role="alert"></div>
 
+        <button id="github-btn" class="github-btn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+          Continue with GitHub
+        </button>
+
+        <div class="divider">or use your email</div>
+
         <label for="auth-email">Email</label>
         <input id="auth-email" type="email" autocomplete="email" placeholder="you@gmail.com">
 
@@ -205,21 +187,103 @@
     </div>
   </div>
 
-  <!-- Signed-in placeholder (the main feed arrives in a later step) -->
-  <div id="screen-home" hidden>
+  <!-- Screen 2: Username setup -->
+  <div id="screen-username" class="wrap" hidden>
+    <div class="panel">
+      <div class="card">
+        <h2>Pick a username</h2>
+        <p class="info-line">This is how other people see you on PetScore. You can change it later in Settings.</p>
+        <div id="username-message" class="msg" hidden role="alert"></div>
+        <label for="username-input">Username</label>
+        <input id="username-input" type="text" maxlength="20" autocomplete="off" placeholder="pet_lover_42">
+        <p class="hint">3 to 20 characters: letters, numbers, and underscores.</p>
+        <button id="username-save" class="primary" type="button">Save username</button>
+        <p class="switch"><button id="username-signout" class="linklike" type="button">Sign out</button></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screens 3 to 5: Feed, Upload, Settings -->
+  <div id="screen-app" hidden>
     <div class="topbar">
       <div class="brand">
         <div class="badge">10</div>
         <h1>PetScore</h1>
       </div>
-      <button id="signout-btn" class="secondary" type="button">Sign out</button>
-    </div>
-    <div class="home-body">
-      <div class="card">
-        <h2>You're signed in</h2>
-        <p class="email-line" id="home-email"></p>
-        <p>Sign-in works. The feed and photo uploads come next.</p>
+      <nav class="tabs" aria-label="Main">
+        <button class="tab active" type="button" data-view="feed">Feed</button>
+        <button class="tab" type="button" data-view="upload">Post a pet</button>
+        <button class="tab" type="button" data-view="settings">Settings</button>
+      </nav>
+      <div class="who">
+        <span id="nav-user"></span>
+        <button id="signout-btn" class="secondary" type="button">Sign out</button>
       </div>
+    </div>
+
+    <div class="main">
+      <!-- Screen 3: Main feed -->
+      <section id="view-feed">
+        <div id="feed-status" class="status" hidden></div>
+        <div id="feed-list"></div>
+      </section>
+
+      <!-- Screen 4: Upload and post -->
+      <section id="view-upload" hidden>
+        <div class="card">
+          <h2>Post a pet</h2>
+          <div id="upload-message" class="msg" hidden role="alert"></div>
+
+          <label for="photo-file">Photo (JPG, PNG or WebP, up to 5 MB)</label>
+          <input id="photo-file" type="file" accept="image/jpeg,image/png,image/webp">
+          <img id="upload-preview" class="preview" alt="Preview of your photo" hidden>
+
+          <label for="pet-name">Pet name</label>
+          <input id="pet-name" type="text" maxlength="60" placeholder="Biscuit">
+
+          <label for="pet-caption">Caption (optional)</label>
+          <textarea id="pet-caption" rows="3" maxlength="500" placeholder="Tell people about your pet"></textarea>
+
+          <fieldset>
+            <legend>Who can see this?</legend>
+            <label class="radio"><input type="radio" name="visibility" value="everyone" checked> Everyone</label>
+            <label class="radio"><input type="radio" name="visibility" value="friends"> Specific people (you pick them)</label>
+            <label class="radio"><input type="radio" name="visibility" value="nobody"> Nobody (only me)</label>
+          </fieldset>
+
+          <div id="friend-picker" hidden>
+            <label for="friend-search">Search for people</label>
+            <input id="friend-search" type="search" placeholder="Type a username" autocomplete="off">
+            <div id="friend-list" class="friend-list"></div>
+            <p id="friend-count" class="friend-count">0 people selected</p>
+          </div>
+
+          <button id="post-btn" class="primary" type="button">Post photo</button>
+        </div>
+      </section>
+
+      <!-- Screen 5: Settings and change password -->
+      <section id="view-settings" hidden>
+        <div class="card">
+          <h2>Your profile</h2>
+          <p class="info-line" id="settings-email"></p>
+          <div id="settings-message" class="msg" hidden role="alert"></div>
+          <label for="settings-username">Username</label>
+          <input id="settings-username" type="text" maxlength="20" autocomplete="off">
+          <button id="settings-save" class="primary" type="button">Save username</button>
+        </div>
+
+        <div id="password-card" class="card" hidden>
+          <h2>Change password</h2>
+          <div id="password-message" class="msg" hidden role="alert"></div>
+          <label for="new-password">New password</label>
+          <input id="new-password" type="password" autocomplete="new-password">
+          <label for="confirm-password">Confirm new password</label>
+          <input id="confirm-password" type="password" autocomplete="new-password">
+          <p class="hint">At least 8 characters, with one uppercase letter, one lowercase letter, and one number.</p>
+          <button id="password-save" class="primary" type="button">Update password</button>
+        </div>
+      </section>
     </div>
   </div>
 

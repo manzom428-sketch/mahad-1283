@@ -144,6 +144,34 @@
     .friend-count { font-size: 13px; color: var(--muted); margin: 0 0 12px; }
     .empty-note { padding: 14px; color: var(--muted); font-size: 14px; }
     .info-line { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+    a { color: var(--action); font-weight: 600; }
+
+    /* ---------- Privacy pop-up ---------- */
+    .privacy-corner {
+      position: fixed; right: 14px; bottom: 14px; z-index: 20; padding: 8px 14px;
+      border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--muted);
+      font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(20, 33, 61, 0.15);
+    }
+    .privacy-corner:hover { color: var(--ink); background: var(--paper); }
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 50; background: rgba(20, 33, 61, 0.6);
+      display: flex; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal { background: var(--card); border-radius: 14px; width: 100%; max-width: 560px; max-height: 90vh; display: flex; flex-direction: column; padding: 22px 24px; }
+    .modal h2 { margin: 0 0 10px; font-size: 22px; }
+    .modal-body { overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; padding: 4px 14px 10px; margin-bottom: 14px; font-size: 14px; }
+    .modal-body h3 { margin: 14px 0 4px; font-size: 15px; }
+    .modal-body p, .modal-body li { margin: 4px 0; }
+    .modal .actions { margin-top: 4px; align-items: center; }
+    .modal .actions .primary { width: auto; padding: 10px 20px; }
+
+    /* ---------- Moderator and admin boards ---------- */
+    .thumb { display: block; max-width: 100%; max-height: 260px; border-radius: 10px; margin: 0 0 12px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .danger { color: var(--error); }
+    .user-line { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+    .user-line .grow { flex: 1; min-width: 140px; overflow-wrap: anywhere; }
+    .log-row { margin: 0; padding: 6px 0; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
   </style>
 </head>
 <body>
@@ -214,6 +242,8 @@
         <button class="tab active" type="button" data-view="feed">Feed</button>
         <button class="tab" type="button" data-view="upload">Post a pet</button>
         <button class="tab" type="button" data-view="settings">Settings</button>
+        <button class="tab" type="button" data-view="mod" hidden>Moderation</button>
+        <button class="tab" type="button" data-view="admin" hidden>Admin</button>
       </nav>
       <div class="who">
         <span id="nav-user"></span>
@@ -262,6 +292,26 @@
         </div>
       </section>
 
+      <!-- Moderator board (moderators and admins) -->
+      <section id="view-mod" hidden>
+        <div class="card">
+          <h2>Moderator board</h2>
+          <p class="info-line">Open reports. Hide a photo to remove it from everyone's feed, remove a comment, or dismiss the report.</p>
+        </div>
+        <div id="mod-list"></div>
+      </section>
+
+      <!-- Admin board (admins only) -->
+      <section id="view-admin" hidden>
+        <div class="card"><h2>Admin board</h2><p id="admin-stats" class="info-line"></p></div>
+        <div class="card">
+          <h2>People</h2>
+          <input id="admin-search" type="search" placeholder="Search usernames" autocomplete="off">
+          <div id="admin-users"></div>
+        </div>
+        <div class="card"><h2>Activity log</h2><div id="admin-log"></div></div>
+      </section>
+
       <!-- Screen 5: Settings and change password -->
       <section id="view-settings" hidden>
         <div class="card">
@@ -284,6 +334,52 @@
           <button id="password-save" class="primary" type="button">Update password</button>
         </div>
       </section>
+    </div>
+  </div>
+
+  <!-- Privacy policy pop-up: required on first sign-in, reopened from the bottom corner -->
+  <button id="privacy-open" class="privacy-corner" type="button">Privacy</button>
+  <div id="privacy-modal" class="modal-backdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+      <h2 id="privacy-title">Privacy Policy</h2>
+      <div id="privacy-body" class="modal-body">
+        <p class="hint" style="margin:8px 0">Last updated: November 22, 2026</p>
+        <h3>What PetScore is</h3>
+        <p>PetScore is a website where people post photos of their pets and rate each other's posts from 1 to 10.</p>
+        <h3>What we collect</h3>
+        <ul>
+          <li><strong>Account details:</strong> your email address and password (stored as a secure hash, never in plain text), or, if you use GitHub sign-in, the email and account identifier GitHub shares with us.</li>
+          <li><strong>Profile:</strong> the username you choose. Other signed-in users can see it.</li>
+          <li><strong>Content you post:</strong> pet photos, pet names, captions, ratings and comments, and who you chose to share a photo with.</li>
+          <li><strong>Safety records:</strong> reports you send about a post, and moderation actions taken on posts, comments or accounts.</li>
+          <li><strong>Your agreement:</strong> the date you accepted this policy.</li>
+        </ul>
+        <p>We do not run advertising or sell your data, and we do not use tracking cookies. Your browser stores a sign-in session so you stay signed in.</p>
+        <h3>Who can see what</h3>
+        <ul>
+          <li>Photos set to Everyone are visible to all signed-in users. Specific people photos are visible only to you and the people you picked. Nobody photos are visible only to you.</li>
+          <li>Your email address is not shown to other users.</li>
+          <li>Moderators can see reported and hidden posts and the comments on them. Admins can also see usernames, moderator and ban status, and an activity log. Staff access is limited by the site's database security rules.</li>
+        </ul>
+        <h3>How we use it</h3>
+        <p>To run your account, show posts and ratings, keep the community safe (review reports, hide content, restrict accounts that break the rules), and keep the service working.</p>
+        <h3>Where it is stored</h3>
+        <p>Data is stored with Supabase, our backend provider, and the site is hosted on GitHub Pages. Photos are kept in a private storage area and shown through short-lived links. GitHub sign-in is handled by GitHub under its own privacy policy.</p>
+        <h3>Keeping and deleting your data</h3>
+        <p>You can delete any of your own posts at any time, which also removes its ratings and comments. To have your account and all its data deleted, contact us at the address below. Safety records may be kept for a reasonable time to prevent repeat abuse.</p>
+        <h3>Children</h3>
+        <p>PetScore is not intended for children under 13, and we do not knowingly collect their data. If you believe a child has signed up, contact us and we will remove the account.</p>
+        <h3>Changes</h3>
+        <p>If we change this policy we will update the date above.</p>
+        <h3>Contact</h3>
+        <p>Questions or deletion requests: <strong>[your contact email here]</strong></p>
+      </div>
+      <label id="privacy-agree-row" class="radio" hidden><input type="checkbox" id="privacy-agree"> I have read and agree to the Privacy Policy</label>
+      <div class="actions">
+        <button id="privacy-continue" class="primary" type="button" hidden disabled>Continue</button>
+        <button id="privacy-signout" class="linklike" type="button" hidden>Sign out</button>
+        <button id="privacy-close" class="secondary" type="button">Close</button>
+      </div>
     </div>
   </div>
 

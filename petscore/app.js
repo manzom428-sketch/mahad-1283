@@ -168,6 +168,8 @@ async function handleSession(session) {
     currentProfile = null;
     profilesById = {};
     selectedFriends = new Set();
+    role = "user"; isBanned = false;
+    privacyRequired = false; $("privacy-modal").hidden = true;
     $("feed-list").replaceChildren();
     showOnly("auth");
     return;
@@ -202,9 +204,11 @@ async function handleSession(session) {
 }
 
 async function enterApp() {
+  await loadRole();
   showOnly("app");
   $("nav-user").textContent = currentProfile.username;
   setView("feed");
+  if (!currentUser.user_metadata || !currentUser.user_metadata.privacy_accepted_at) openPrivacy(true);
 }
 
 // ---------- Screen 2: Username setup ----------
@@ -233,7 +237,7 @@ async function saveNewUsername() {
 
 // ---------- Navigation ----------
 function setView(name) {
-  for (const view of ["feed", "upload", "settings"]) {
+  for (const view of ["feed", "upload", "settings", "mod", "admin"]) {
     $("view-" + view).hidden = view !== name;
   }
   document.querySelectorAll(".tab").forEach((tab) => {
@@ -242,6 +246,8 @@ function setView(name) {
   if (name === "feed") loadFeed();
   if (name === "upload") loadProfiles().then(renderFriendList);
   if (name === "settings") fillSettings();
+  if (name === "mod") loadModBoard();
+  if (name === "admin") loadAdmin();
 }
 
 async function loadProfiles() {
@@ -330,10 +336,13 @@ function renderPost(photo, ratings, imageUrl) {
       on: { click: () => deletePost(photo) }
     }));
   }
+  if (photo.user_id !== currentUser.id) {
+    body.append(el("button", { className: "delete-btn", text: "Report", attrs: { type: "button" }, on: { click: () => reportPhoto(photo) } }));
+  }
   body.append(el("h3", { className: "post-title", text: photo.pet_name }));
   body.append(el("p", {
     className: "meta",
-    text: "by " + usernameFor(photo.user_id) + " \u00b7 " + VISIBILITY_LABELS[photo.visibility] +
+    text: "by " + usernameFor(photo.user_id) + " \u00b7 " + VISIBILITY_LABELS[photo.visibility] + (photo.status === "hidden" ? " \u00b7 Hidden by moderators" : "") +
       " \u00b7 " + new Date(photo.created_at).toLocaleDateString()
   }));
   if (photo.caption) body.append(el("p", { className: "caption", text: photo.caption }));
@@ -393,12 +402,12 @@ async function submitRating(photoId, rating, comment, button, note) {
 
 async function deletePost(photo) {
   if (!window.confirm("Delete " + photo.pet_name + "? This also removes its ratings and comments.")) return;
-  await sb.storage.from(BUCKET).remove([photo.image_url]);
   const { error } = await sb.from("photos").delete().eq("id", photo.id);
   if (error) {
     window.alert("Could not delete: " + error.message);
     return;
   }
+  await sb.storage.from(BUCKET).remove([photo.image_url]);
   loadFeed();
 }
 
@@ -464,6 +473,7 @@ async function submitPost() {
   const caption = $("pet-caption").value.trim();
   const visibility = currentVisibility();
 
+  if (isBanned) return showMsg(msg, "Your account has been restricted, so you cannot post.", "error");
   if (!file) return showMsg(msg, "Choose a photo first.", "error");
   if (!FILE_TYPES[file.type]) return showMsg(msg, "Choose a JPG, PNG, or WebP image.", "error");
   if (file.size > MAX_BYTES) return showMsg(msg, "That photo is over 5 MB.", "error");
@@ -609,6 +619,210 @@ $("post-btn").addEventListener("click", submitPost);
 
 $("settings-save").addEventListener("click", saveSettingsUsername);
 $("password-save").addEventListener("click", changePassword);
+
+// ---------- Roles: user, moderator, admin ----------
+// The buttons below only hide or show tabs. The real security is the row level
+// security in supabase-setup.sql, which re-checks the role on every request.
+let role = "user";
+let isBanned = false;
+
+async function loadRole() {
+  const uid = currentUser.id;
+  const [a, m, b] = await Promise.all([
+    sb.from("admins").select("user_id").eq("user_id", uid).maybeSingle(),
+    sb.from("moderators").select("user_id").eq("user_id", uid).maybeSingle(),
+    sb.from("banned_users").select("user_id").eq("user_id", uid).maybeSingle()
+  ]);
+  role = a.data ? "admin" : m.data ? "moderator" : "user";
+  isBanned = !!b.data;
+  document.querySelector('.tab[data-view="mod"]').hidden = role === "user";
+  document.querySelector('.tab[data-view="admin"]').hidden = role !== "admin";
+}
+
+function logAction(action, target) {
+  return sb.from("audit_log").insert({ actor_id: currentUser.id, action, target: String(target) });
+}
+
+async function runAction(button, work) {
+  button.disabled = true;
+  const { error } = await work();
+  if (error) { window.alert("Action failed: " + error.message); button.disabled = false; return false; }
+  return true;
+}
+
+async function reportPhoto(photo) {
+  const reason = window.prompt("Why are you reporting this photo? (max 300 characters)");
+  if (!reason || !reason.trim()) return;
+  const { error } = await sb.from("reports").insert({
+    photo_id: photo.id, reporter_id: currentUser.id, reason: reason.trim().slice(0, 300)
+  });
+  window.alert(error
+    ? (error.code === "23505" ? "You already reported this photo." : "Could not send the report: " + error.message)
+    : "Thanks. A moderator will review it.");
+}
+
+function note(text) { return el("p", { className: "status", text }); }
+
+// ---------- Moderator board ----------
+async function loadModBoard() {
+  const box = $("mod-list");
+  box.replaceChildren(note("Loading reports..."));
+  const { data: reports, error } = await sb.from("reports").select("*").eq("status", "open").order("created_at", { ascending: true });
+  if (error) return box.replaceChildren(note("Could not load reports: " + error.message));
+  if (!reports.length) return box.replaceChildren(note("No open reports. Nice and quiet."));
+
+  await loadProfiles();
+  const ids = [...new Set(reports.map((r) => r.photo_id))];
+  const { data: photos } = await sb.from("photos").select("*").in("id", ids);
+  const photoById = Object.fromEntries((photos || []).map((p) => [p.id, p]));
+  const { data: urls } = await sb.storage.from(BUCKET).createSignedUrls((photos || []).map((p) => p.image_url), 3600);
+  const urlByPath = Object.fromEntries((urls || []).filter((u) => u.signedUrl).map((u) => [u.path, u.signedUrl]));
+  const { data: comments } = await sb.from("ratings_and_comments").select("*").in("photo_id", ids).not("comment", "is", null);
+
+  box.replaceChildren(...reports.map((r) => {
+    const p = photoById[r.photo_id];
+    if (!p) return el("div", { className: "card" }, [el("p", { text: "This photo no longer exists." })]);
+    const hidden = p.status === "hidden";
+    const done = async (ok) => { if (ok) loadModBoard(); };
+    const buttons = [
+      el("button", { className: "secondary", text: hidden ? "Restore photo" : "Hide photo", attrs: { type: "button" }, on: { click: async (e) => {
+        const ok = await runAction(e.target, async () => {
+          const up = await sb.from("photos").update({ status: hidden ? "active" : "hidden" }).eq("id", p.id);
+          if (up.error) return up;
+          await sb.from("reports").update({ status: "resolved", resolved_by: currentUser.id }).eq("photo_id", p.id).eq("status", "open");
+          return logAction(hidden ? "restore_photo" : "hide_photo", p.id);
+        });
+        done(ok);
+      } } }),
+      el("button", { className: "secondary", text: "Dismiss report", attrs: { type: "button" }, on: { click: async (e) => {
+        done(await runAction(e.target, async () => {
+          const up = await sb.from("reports").update({ status: "dismissed", resolved_by: currentUser.id }).eq("id", r.id);
+          return up.error ? up : logAction("dismiss_report", r.id);
+        }));
+      } } })
+    ];
+    if (role === "admin") {
+      buttons.push(el("button", { className: "secondary danger", text: "Delete permanently", attrs: { type: "button" }, on: { click: async (e) => {
+        if (!window.confirm("Permanently delete " + p.pet_name + "?")) return;
+        done(await runAction(e.target, async () => {
+          const del = await sb.from("photos").delete().eq("id", p.id);
+          if (del.error) return del;
+          await sb.storage.from(BUCKET).remove([p.image_url]);
+          return logAction("delete_photo", p.id);
+        }));
+      } } }));
+    }
+    const commentRows = (comments || []).filter((c) => c.photo_id === p.id).map((c) =>
+      el("li", {}, [
+        el("strong", { text: usernameFor(c.user_id) + ": " }),
+        document.createTextNode(c.comment + " "),
+        el("button", { className: "linklike", text: "Remove", attrs: { type: "button" }, on: { click: async (e) => {
+          done(await runAction(e.target, async () => {
+            const del = await sb.from("ratings_and_comments").delete().eq("photo_id", c.photo_id).eq("user_id", c.user_id);
+            return del.error ? del : logAction("remove_comment", c.photo_id + "/" + c.user_id);
+          }));
+        } } })
+      ]));
+    return el("article", { className: "card" }, [
+      urlByPath[p.image_url] ? el("img", { className: "thumb", attrs: { src: urlByPath[p.image_url], alt: p.pet_name } }) : null,
+      el("h3", { className: "post-title", text: p.pet_name + (hidden ? " (hidden)" : "") }),
+      el("p", { className: "meta", text: "Posted by " + usernameFor(p.user_id) + " \u00b7 reported by " + usernameFor(r.reporter_id) }),
+      el("p", { className: "caption", text: "Reason: " + r.reason }),
+      commentRows.length ? el("ul", { className: "scores" }, commentRows) : null,
+      el("div", { className: "actions" }, buttons)
+    ]);
+  }));
+}
+
+// ---------- Admin board ----------
+let adminData = { moderators: new Set(), admins: new Set(), banned: new Set() };
+
+async function loadAdmin() {
+  $("admin-stats").textContent = "Loading...";
+  await loadProfiles();
+  const count = (t) => sb.from(t).select("*", { count: "exact", head: true });
+  const [mods, adm, ban, photos, open, log] = await Promise.all([
+    sb.from("moderators").select("user_id"), sb.from("admins").select("user_id"), sb.from("banned_users").select("user_id"),
+    count("photos"), sb.from("reports").select("*", { count: "exact", head: true }).eq("status", "open"),
+    sb.from("audit_log").select("*").order("created_at", { ascending: false }).limit(30)
+  ]);
+  adminData = {
+    moderators: new Set((mods.data || []).map((x) => x.user_id)),
+    admins: new Set((adm.data || []).map((x) => x.user_id)),
+    banned: new Set((ban.data || []).map((x) => x.user_id))
+  };
+  $("admin-stats").textContent = Object.keys(profilesById).length + " people \u00b7 " + (photos.count || 0) +
+    " photos \u00b7 " + (open.count || 0) + " open reports \u00b7 " + adminData.moderators.size + " moderators \u00b7 " + adminData.banned.size + " banned";
+  renderAdminUsers();
+  $("admin-log").replaceChildren(...((log.data || []).length
+    ? log.data.map((l) => el("p", { className: "log-row", text: new Date(l.created_at).toLocaleString() + " \u00b7 " + usernameFor(l.actor_id) + " \u00b7 " + l.action + " \u00b7 " + (l.target || "") }))
+    : [note("No activity yet.")]));
+}
+
+function renderAdminUsers() {
+  const q = $("admin-search").value.trim().toLowerCase();
+  const rows = Object.entries(profilesById)
+    .filter(([, name]) => name.toLowerCase().includes(q))
+    .sort((a, b) => a[1].localeCompare(b[1])).slice(0, 100)
+    .map(([id, name]) => {
+      const isAdm = adminData.admins.has(id), isMod = adminData.moderators.has(id), isBan = adminData.banned.has(id);
+      const tags = [isAdm && "admin", isMod && "moderator", isBan && "banned"].filter(Boolean).join(", ");
+      const kids = [el("span", { className: "grow", text: name + (tags ? " (" + tags + ")" : "") })];
+      if (!isAdm && id !== currentUser.id) {
+        kids.push(el("button", { className: "secondary", text: isMod ? "Remove moderator" : "Make moderator", attrs: { type: "button" }, on: { click: async (e) => {
+          if (await runAction(e.target, async () => {
+            const res = isMod ? await sb.from("moderators").delete().eq("user_id", id)
+              : await sb.from("moderators").insert({ user_id: id, added_by: currentUser.id });
+            return res.error ? res : logAction(isMod ? "remove_moderator" : "add_moderator", name);
+          })) loadAdmin();
+        } } }));
+        kids.push(el("button", { className: "secondary danger", text: isBan ? "Unban" : "Ban", attrs: { type: "button" }, on: { click: async (e) => {
+          if (!isBan && !window.confirm("Ban " + name + "? They can still sign in but cannot post, rate or report.")) return;
+          if (await runAction(e.target, async () => {
+            const res = isBan ? await sb.from("banned_users").delete().eq("user_id", id)
+              : await sb.from("banned_users").insert({ user_id: id, banned_by: currentUser.id });
+            return res.error ? res : logAction(isBan ? "unban_user" : "ban_user", name);
+          })) loadAdmin();
+        } } }));
+      }
+      return el("div", { className: "user-line" }, kids);
+    });
+  $("admin-users").replaceChildren(...(rows.length ? rows : [note("No one found.")]));
+}
+
+$("admin-search").addEventListener("input", renderAdminUsers);
+
+// ---------- Privacy pop-up ----------
+let privacyRequired = false;
+
+function openPrivacy(required) {
+  privacyRequired = required;
+  $("privacy-agree-row").hidden = !required;
+  $("privacy-continue").hidden = !required;
+  $("privacy-signout").hidden = !required;
+  $("privacy-close").hidden = required;
+  $("privacy-agree").checked = false;
+  $("privacy-continue").disabled = true;
+  $("privacy-modal").hidden = false;
+  $("privacy-body").scrollTop = 0;
+}
+function closePrivacy() { if (!privacyRequired) $("privacy-modal").hidden = true; }
+
+$("privacy-open").addEventListener("click", () => openPrivacy(false));
+$("privacy-close").addEventListener("click", closePrivacy);
+$("privacy-modal").addEventListener("click", (e) => { if (e.target === $("privacy-modal")) closePrivacy(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePrivacy(); });
+$("privacy-agree").addEventListener("change", () => { $("privacy-continue").disabled = !$("privacy-agree").checked; });
+$("privacy-signout").addEventListener("click", () => sb.auth.signOut());
+$("privacy-continue").addEventListener("click", async () => {
+  const btn = $("privacy-continue");
+  btn.disabled = true;
+  const { data, error } = await sb.auth.updateUser({ data: { privacy_accepted_at: new Date().toISOString() } });
+  if (error) { btn.disabled = false; window.alert("Could not save your agreement: " + error.message); return; }
+  currentUser = data.user;
+  privacyRequired = false;
+  $("privacy-modal").hidden = true;
+});
 
 // ---------- Start ----------
 // If a sign-in (such as GitHub) failed, Supabase sends the person back with the

@@ -237,7 +237,7 @@ async function saveNewUsername() {
 
 // ---------- Navigation ----------
 function setView(name) {
-  for (const view of ["feed", "upload", "settings", "mod", "admin"]) {
+  for (const view of ["feed", "upload", "settings", "mod", "admin", "search", "profile"]) {
     $("view-" + view).hidden = view !== name;
   }
   document.querySelectorAll(".tab").forEach((tab) => {
@@ -246,6 +246,7 @@ function setView(name) {
   if (name === "feed") loadFeed();
   if (name === "upload") loadProfiles().then(renderFriendList);
   if (name === "settings") fillSettings();
+  if (name === "search") runSearch();
   if (name === "mod") loadModBoard();
   if (name === "admin") loadAdmin();
 }
@@ -352,11 +353,12 @@ function renderPost(photo, ratings, imageUrl) {
     body.append(el("button", { className: "delete-btn", text: "Report", attrs: { type: "button" }, on: { click: () => reportPhoto(photo) } }));
   }
   body.append(el("h3", { className: "post-title", text: photo.pet_name }));
-  body.append(el("p", {
-    className: "meta",
-    text: "by " + usernameFor(photo.user_id) + " \u00b7 " + VISIBILITY_LABELS[photo.visibility] + (photo.status === "hidden" ? " \u00b7 Hidden by moderators" : "") +
-      " \u00b7 " + new Date(photo.created_at).toLocaleDateString()
-  }));
+  body.append(el("p", { className: "meta" }, [
+    document.createTextNode("by "),
+    userLink(photo.user_id),
+    document.createTextNode(" \u00b7 " + VISIBILITY_LABELS[photo.visibility] + (photo.status === "hidden" ? " \u00b7 Hidden by moderators" : "") +
+      " \u00b7 " + new Date(photo.created_at).toLocaleDateString())
+  ]));
   if (photo.caption) body.append(el("p", { className: "caption", text: photo.caption }));
 
   // Individual scores and comments
@@ -364,7 +366,7 @@ function renderPost(photo, ratings, imageUrl) {
     const list = el("ul", { className: "scores" });
     ratings.forEach((r) => {
       const row = el("li", {}, [
-        el("strong", { text: usernameFor(r.user_id) }),
+        el("strong", {}, [userLink(r.user_id)]),
         el("span", { className: "score-pill", text: r.rating + "/10" })
       ]);
       if (r.comment) row.append(document.createTextNode(r.comment));
@@ -894,6 +896,72 @@ $("delete-account").addEventListener("click", async () => {
   if (error) { btn.disabled = false; window.alert("Could not delete the account: " + error.message); return; }
   await sb.auth.signOut();
 });
+
+// ---------- Search people and profile pages ----------
+function userLink(id) {
+  return el("button", { className: "linklike", text: usernameFor(id), attrs: { type: "button" }, on: { click: () => openProfile(id) } });
+}
+
+function openProfile(id) {
+  setView("profile");
+  loadProfile(id);
+}
+
+let searchTimer;
+async function runSearch() {
+  const box = $("search-results");
+  const q = $("search-input").value.trim().replace(/[%\\]/g, "").replace(/_/g, "\\_");
+  let query = sb.from("profiles").select("id, username").order("username").limit(30);
+  if (q) query = query.ilike("username", "%" + q + "%");
+  const { data, error } = await query;
+  if (error) return box.replaceChildren(note("Could not search: " + error.message));
+  if (!data.length) return box.replaceChildren(note("No one found."));
+  box.replaceChildren(...data.map((p) => {
+    profilesById[p.id] = p.username;
+    return el("button", {
+      className: "result-row", attrs: { type: "button" },
+      text: p.username + (p.id === currentUser.id ? " (you)" : ""),
+      on: { click: () => openProfile(p.id) }
+    });
+  }));
+}
+
+async function loadProfile(userId) {
+  const head = $("profile-head"), list = $("profile-list");
+  head.replaceChildren(note("Loading..."));
+  list.replaceChildren();
+  const [profRes, photoRes] = await Promise.all([
+    sb.from("profiles").select("*").eq("id", userId).maybeSingle(),
+    sb.from("photos").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(50)
+  ]);
+  if (!profRes.data) return head.replaceChildren(note("This profile could not be found."));
+  if (photoRes.error) return head.replaceChildren(note("Could not load this profile: " + photoRes.error.message));
+  const prof = profRes.data, photos = photoRes.data || [];
+  profilesById[userId] = prof.username;
+
+  let ratings = [], urlByPath = {};
+  if (photos.length) {
+    const [rRes, uRes] = await Promise.all([
+      sb.from("ratings_and_comments").select("*").in("photo_id", photos.map((p) => p.id)).order("created_at", { ascending: true }),
+      sb.storage.from(BUCKET).createSignedUrls(photos.map((p) => p.image_url), 3600)
+    ]);
+    ratings = rRes.data || [];
+    (uRes.data || []).forEach((u) => { if (u.signedUrl) urlByPath[u.path] = u.signedUrl; });
+  }
+  const avg = ratings.length ? (ratings.reduce((s, x) => s + x.rating, 0) / ratings.length).toFixed(1) : null;
+  head.replaceChildren(
+    el("h2", { text: prof.username + (userId === currentUser.id ? " (you)" : "") }),
+    prof.created_at ? el("p", { className: "info-line", text: "Joined " + new Date(prof.created_at).toLocaleDateString() }) : null,
+    el("p", { className: "stats", text: photos.length + (photos.length === 1 ? " pet" : " pets") + " \u00b7 " + ratings.length +
+      (ratings.length === 1 ? " rating" : " ratings") + " received" + (avg ? " \u00b7 average " + avg + "/10" : "") })
+  );
+  list.replaceChildren(...(photos.length
+    ? photos.map((p) => renderPost(p, ratings.filter((x) => x.photo_id === p.id), urlByPath[p.image_url]))
+    : [note("No pets to show yet.")]));
+}
+
+$("search-input").addEventListener("input", () => { clearTimeout(searchTimer); searchTimer = setTimeout(runSearch, 250); });
+$("profile-back").addEventListener("click", () => setView("search"));
 
 // ---------- Start ----------
 // If a sign-in (such as GitHub) failed, Supabase sends the person back with the

@@ -193,6 +193,9 @@
     html[data-theme="dark"] .badge, html[data-theme="dark"] .score-pill { color: #14213d; }
     html[data-theme="dark"] .photo-missing { background: var(--paper); }
     html[data-theme="dark"] .danger-zone .primary { color: #14213d; }
+    .result-row { display: flex; width: 100%; text-align: left; padding: 10px 4px; background: none; border: none; border-bottom: 1px solid var(--line); color: var(--ink); font-weight: 700; }
+    .result-row:hover { background: var(--paper); }
+    .stats { color: var(--muted); font-size: 14px; margin: 0; }
     .log-row { margin: 0; padding: 6px 0; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
   </style>
 </head>
@@ -263,6 +266,7 @@
       <nav class="tabs" aria-label="Main">
         <button class="tab active" type="button" data-view="feed">Feed</button>
         <button class="tab" type="button" data-view="upload">Post a pet</button>
+        <button class="tab" type="button" data-view="search">Search</button>
         <button class="tab" type="button" data-view="settings">Settings</button>
         <button class="tab" type="button" data-view="mod" hidden>Moderation</button>
         <button class="tab" type="button" data-view="admin" hidden>Admin</button>
@@ -322,6 +326,22 @@
 
           <button id="post-btn" class="primary" type="button">Post photo</button>
         </div>
+      </section>
+
+      <!-- Search people -->
+      <section id="view-search" hidden>
+        <div class="card">
+          <h2>Find people</h2>
+          <input id="search-input" type="search" placeholder="Search usernames" autocomplete="off" maxlength="20">
+          <div id="search-results"></div>
+        </div>
+      </section>
+
+      <!-- Profile page -->
+      <section id="view-profile" hidden>
+        <p><button id="profile-back" class="secondary" type="button">&larr; Back to search</button></p>
+        <div id="profile-head" class="card"></div>
+        <div id="profile-list"></div>
       </section>
 
       <!-- Moderator board (moderators and admins) -->
@@ -410,13 +430,13 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
       <h2 id="privacy-title">Privacy Policy</h2>
       <div id="privacy-body" class="modal-body">
-        <p class="hint" style="margin:8px 0">Last updated: November 23, 2026</p>
+        <p class="hint" style="margin:8px 0">Last updated: November 24, 2026</p>
         <h3>What PetScore is</h3>
         <p>PetScore is a website where people post photos of their pets and rate each other's posts from 1 to 10.</p>
         <h3>What we collect</h3>
         <ul>
           <li><strong>Account details:</strong> your email address and password (stored as a secure hash, never in plain text), or, if you use GitHub sign-in, the email and account identifier GitHub shares with us.</li>
-          <li><strong>Profile:</strong> the username you choose. Other signed-in users can see it.</li>
+          <li><strong>Profile:</strong> the username you choose and the date you joined. Other signed-in users can find you by username and open a profile page showing your posts they are allowed to see, with your average score.</li>
           <li><strong>Content you post:</strong> pet photos, pet names, captions, ratings and comments, and who you chose to share a photo with.</li>
           <li><strong>Safety records:</strong> reports you send about a post, and moderation actions taken on posts, comments or accounts.</li>
           <li><strong>Your agreement:</strong> the date you accepted this policy.</li>
@@ -439,7 +459,7 @@
         <h3>Changes</h3>
         <p>If we change this policy we will update the date above.</p>
         <h3>Contact</h3>
-        <p>Questions or deletion requests: <strong>[your contact email here]</strong></p>
+        <p>Questions or deletion requests: <strong>[manzo.m.428@isg.edu.sa]</strong></p>
       </div>
       <label id="privacy-agree-row" class="radio" hidden><input type="checkbox" id="privacy-agree"> I have read and agree to the Privacy Policy</label>
       <div class="actions">

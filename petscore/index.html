@@ -171,6 +171,28 @@
     .danger { color: var(--error); }
     .user-line { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
     .user-line .grow { flex: 1; min-width: 140px; overflow-wrap: anywhere; }
+    /* ---------- Preferences: dark mode, text size, reduced motion ---------- */
+    select { width: 100%; font: inherit; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); margin-bottom: 14px; }
+    .feed-tools { padding: 14px 18px; }
+    .feed-tools select { margin-bottom: 8px; }
+    .danger-zone { border-color: var(--error); }
+    .danger-zone .primary { background: var(--error); }
+    html[data-size="small"] body { zoom: 0.9; }
+    html[data-size="large"] body { zoom: 1.15; }
+    html[data-motion="reduce"] * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+    html[data-theme="dark"] {
+      --ink: #e8eefb; --paper: #0b1426; --card: #14213d; --line: #2b3b5c; --muted: #9fb0cc;
+      --action: #3b6df0; --action-dark: #2f58c8; --error: #ff8a80; --error-bg: #3a1a1a; --ok: #6fe3a4; --ok-bg: #12301f;
+      color-scheme: dark;
+    }
+    html[data-theme="dark"] input, html[data-theme="dark"] textarea, html[data-theme="dark"] .secondary,
+    html[data-theme="dark"] .delete-btn { background: var(--paper); color: var(--ink); }
+    html[data-theme="dark"] .secondary:hover { background: var(--line); }
+    html[data-theme="dark"] .avg-bar { background: #0b1426; border-bottom: 1px solid var(--line); }
+    html[data-theme="dark"] .tab.active { background: var(--action); }
+    html[data-theme="dark"] .badge, html[data-theme="dark"] .score-pill { color: #14213d; }
+    html[data-theme="dark"] .photo-missing { background: var(--paper); }
+    html[data-theme="dark"] .danger-zone .primary { color: #14213d; }
     .log-row { margin: 0; padding: 6px 0; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
   </style>
 </head>
@@ -254,6 +276,16 @@
     <div class="main">
       <!-- Screen 3: Main feed -->
       <section id="view-feed">
+        <div class="card feed-tools">
+          <label for="feed-sort">Sort photos by</label>
+          <select id="feed-sort">
+            <option value="new">Newest</option>
+            <option value="top">Highest rated</option>
+            <option value="comments">Most commented</option>
+          </select>
+          <label class="radio"><input type="checkbox" id="feed-mine"> Only my pets</label>
+          <label class="radio"><input type="checkbox" id="feed-unrated"> Hide photos I have rated</label>
+        </div>
         <div id="feed-status" class="status" hidden></div>
         <div id="feed-list"></div>
       </section>
@@ -323,6 +355,35 @@
           <button id="settings-save" class="primary" type="button">Save username</button>
         </div>
 
+        <div class="card">
+          <h2>Preferences</h2>
+          <p class="info-line">Saved on this device.</p>
+          <label for="pref-theme">Appearance</label>
+          <select id="pref-theme">
+            <option value="device">Match my device</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+          <label for="pref-size">Text size</label>
+          <select id="pref-size">
+            <option value="small">Small</option>
+            <option value="normal">Normal</option>
+            <option value="large">Large</option>
+          </select>
+          <label for="pref-motion">Motion</label>
+          <select id="pref-motion">
+            <option value="normal">Normal</option>
+            <option value="reduce">Reduce motion</option>
+          </select>
+          <label for="pref-visibility">Default visibility for new posts</label>
+          <select id="pref-visibility">
+            <option value="everyone">Everyone</option>
+            <option value="friends">Specific people</option>
+            <option value="nobody">Nobody (only me)</option>
+          </select>
+          <label class="radio"><input type="checkbox" id="pref-confirm"> Ask me to confirm before posting</label>
+        </div>
+
         <div id="password-card" class="card" hidden>
           <h2>Change password</h2>
           <div id="password-message" class="msg" hidden role="alert"></div>
@@ -332,6 +393,12 @@
           <input id="confirm-password" type="password" autocomplete="new-password">
           <p class="hint">At least 8 characters, with one uppercase letter, one lowercase letter, and one number.</p>
           <button id="password-save" class="primary" type="button">Update password</button>
+        </div>
+
+        <div class="card danger-zone">
+          <h2>Delete account</h2>
+          <p class="info-line">Permanently removes your account and all your posts, ratings and comments. This cannot be undone.</p>
+          <button id="delete-account" class="primary" type="button">Delete my account</button>
         </div>
       </section>
     </div>
@@ -343,7 +410,7 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
       <h2 id="privacy-title">Privacy Policy</h2>
       <div id="privacy-body" class="modal-body">
-        <p class="hint" style="margin:8px 0">Last updated: November 22, 2026</p>
+        <p class="hint" style="margin:8px 0">Last updated: November 23, 2026</p>
         <h3>What PetScore is</h3>
         <p>PetScore is a website where people post photos of their pets and rate each other's posts from 1 to 10.</p>
         <h3>What we collect</h3>
@@ -366,7 +433,7 @@
         <h3>Where it is stored</h3>
         <p>Data is stored with Supabase, our backend provider, and the site is hosted on GitHub Pages. Photos are kept in a private storage area and shown through short-lived links. GitHub sign-in is handled by GitHub under its own privacy policy.</p>
         <h3>Keeping and deleting your data</h3>
-        <p>You can delete any of your own posts at any time, which also removes its ratings and comments. To have your account and all its data deleted, contact us at the address below. Safety records may be kept for a reasonable time to prevent repeat abuse.</p>
+        <p>You can delete any of your own posts at any time, which also removes its ratings and comments. You can delete your account and all its data yourself in Settings, or contact us at the address below. Safety records may be kept for a reasonable time to prevent repeat abuse.</p>
         <h3>Children</h3>
         <p>PetScore is not intended for children under 13, and we do not knowingly collect their data. If you believe a child has signed up, contact us and we will remove the account.</p>
         <h3>Changes</h3>

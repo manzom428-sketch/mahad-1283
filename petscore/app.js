@@ -306,7 +306,19 @@ async function loadFeed() {
   const urlByPath = {};
   (urlsRes.data || []).forEach((u) => { if (u.signedUrl) urlByPath[u.path] = u.signedUrl; });
 
-  const cards = photos.map((p) => renderPost(p, ratingsByPhoto[p.id] || [], urlByPath[p.image_url]));
+  let list = photos.slice();
+  if (prefs.onlyMine) list = list.filter((p) => p.user_id === currentUser.id);
+  if (prefs.hideRated) list = list.filter((p) => !(ratingsByPhoto[p.id] || []).some((r) => r.user_id === currentUser.id));
+  const avg = (p) => { const rs = ratingsByPhoto[p.id] || []; return rs.length ? rs.reduce((s, x) => s + x.rating, 0) / rs.length : 0; };
+  const comments = (p) => (ratingsByPhoto[p.id] || []).filter((x) => x.comment).length;
+  if (prefs.sort === "top") list.sort((a, b) => avg(b) - avg(a));
+  if (prefs.sort === "comments") list.sort((a, b) => comments(b) - comments(a));
+  if (!list.length) {
+    $("feed-list").replaceChildren();
+    status.textContent = "Nothing matches your filters.";
+    return;
+  }
+  const cards = list.map((p) => renderPost(p, ratingsByPhoto[p.id] || [], urlByPath[p.image_url]));
   $("feed-list").replaceChildren(...cards);
   status.hidden = true;
 }
@@ -482,6 +494,10 @@ async function submitPost() {
     return showMsg(msg, "Pick at least one person who can see this, or choose Everyone or Nobody.", "error");
   }
 
+  if (prefs.confirmPost) {
+    const who = { everyone: "everyone", friends: selectedFriends.size + " chosen people", nobody: "only you" }[visibility];
+    if (!window.confirm("Post " + petName + " so that " + who + " can see it?")) return;
+  }
   $("post-btn").disabled = true;
   const photoId = crypto.randomUUID();
   const path = currentUser.id + "/" + photoId + "." + FILE_TYPES[file.type];
@@ -525,7 +541,7 @@ function resetUploadForm() {
   $("pet-name").value = "";
   $("pet-caption").value = "";
   $("friend-search").value = "";
-  document.querySelector('input[name="visibility"][value="everyone"]').checked = true;
+  applyDefaultVisibility();
   $("friend-picker").hidden = true;
   selectedFriends = new Set();
   if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
@@ -822,6 +838,61 @@ $("privacy-continue").addEventListener("click", async () => {
   currentUser = data.user;
   privacyRequired = false;
   $("privacy-modal").hidden = true;
+});
+
+// ---------- Preferences (saved in this browser) ----------
+const PREF_KEY = "petscore_prefs";
+const prefs = Object.assign(
+  { theme: "device", size: "normal", motion: "normal", visibility: "everyone", sort: "new", onlyMine: false, hideRated: false, confirmPost: false },
+  (() => { try { return JSON.parse(localStorage.getItem(PREF_KEY)) || {}; } catch (e) { return {}; } })()
+);
+function applyPrefs() {
+  const dark = prefs.theme === "dark" || (prefs.theme === "device" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const root = document.documentElement;
+  root.dataset.theme = dark ? "dark" : "light";
+  root.dataset.size = prefs.size;
+  root.dataset.motion = prefs.motion;
+}
+function savePrefs() {
+  try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) { /* storage blocked: still apply for this visit */ }
+  applyPrefs();
+}
+function applyDefaultVisibility() {
+  const radio = document.querySelector('input[name="visibility"][value="' + prefs.visibility + '"]');
+  if (radio) { radio.checked = true; radio.dispatchEvent(new Event("change", { bubbles: true })); }
+}
+function bindPref(id, key, isCheckbox, after) {
+  const input = $(id);
+  if (isCheckbox) input.checked = !!prefs[key]; else input.value = prefs[key];
+  input.addEventListener("change", () => {
+    prefs[key] = isCheckbox ? input.checked : input.value;
+    savePrefs();
+    if (after) after();
+  });
+}
+bindPref("pref-theme", "theme", false);
+bindPref("pref-size", "size", false);
+bindPref("pref-motion", "motion", false);
+bindPref("pref-visibility", "visibility", false, applyDefaultVisibility);
+bindPref("pref-confirm", "confirmPost", true);
+bindPref("feed-sort", "sort", false, loadFeed);
+bindPref("feed-mine", "onlyMine", true, loadFeed);
+bindPref("feed-unrated", "hideRated", true, loadFeed);
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyPrefs);
+applyPrefs();
+applyDefaultVisibility();
+
+// ---------- Delete my account ----------
+$("delete-account").addEventListener("click", async () => {
+  if (!window.confirm("Delete your account and ALL your posts, ratings and comments? This cannot be undone.")) return;
+  if (window.prompt("Type DELETE to confirm.") !== "DELETE") return;
+  const btn = $("delete-account");
+  btn.disabled = true;
+  const { data } = await sb.from("photos").select("image_url").eq("user_id", currentUser.id);
+  if (data && data.length) await sb.storage.from(BUCKET).remove(data.map((p) => p.image_url));
+  const { error } = await sb.rpc("delete_my_account");
+  if (error) { btn.disabled = false; window.alert("Could not delete the account: " + error.message); return; }
+  await sb.auth.signOut();
 });
 
 // ---------- Start ----------

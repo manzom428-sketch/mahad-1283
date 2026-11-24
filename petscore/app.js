@@ -49,6 +49,8 @@ function showOnly(name) {
   $("screen-auth").hidden = name !== "auth";
   $("screen-username").hidden = name !== "username";
   $("screen-app").hidden = name !== "app";
+  $("screen-banned").hidden = name !== "banned";
+  $("privacy-open").hidden = name === "banned";
 }
 
 function validateEmail(email) {
@@ -205,11 +207,41 @@ async function handleSession(session) {
 
 async function enterApp() {
   await loadRole();
+  if (isBanned) { await showBanScreen(); return; }   // banned: the app never shows
   showOnly("app");
   $("nav-user").textContent = currentProfile.username;
   setView("feed");
   if (!currentUser.user_metadata || !currentUser.user_metadata.privacy_accepted_at) openPrivacy(true);
 }
+
+// ---------- Ban screen and one-time appeal ----------
+async function showBanScreen() {
+  showOnly("banned");
+  const msg = $("ban-message");
+  clearMsg(msg);
+  $("ban-form").hidden = true;
+  const { data, error } = await sb.from("ban_appeals").select("status").eq("user_id", currentUser.id).maybeSingle();
+  if (error) return showMsg(msg, "Could not check your appeal: " + error.message, "error");
+  if (!data) { $("ban-form").hidden = false; return; }
+  if (data.status === "denied") showMsg(msg, "Your appeal was reviewed and denied. This decision is final.", "error");
+  else showMsg(msg, "Your appeal has been sent. An admin will review it.", "ok");
+}
+
+async function submitAppeal() {
+  const msg = $("ban-message");
+  clearMsg(msg);
+  const text = $("ban-text").value.trim();
+  if (text.length < 10) return showMsg(msg, "Write at least 10 characters.", "error");
+  if (!window.confirm("You only get one appeal. Send it now?")) return;
+  $("ban-send").disabled = true;
+  const { error } = await sb.from("ban_appeals").insert({ user_id: currentUser.id, message: text });
+  $("ban-send").disabled = false;
+  if (error && error.code !== "23505") return showMsg(msg, "Could not send your appeal: " + error.message, "error");
+  await showBanScreen();
+}
+
+$("ban-send").addEventListener("click", submitAppeal);
+$("ban-signout").addEventListener("click", handleSignOut);
 
 // ---------- Screen 2: Username setup ----------
 async function saveNewUsername() {
@@ -759,10 +791,11 @@ async function loadAdmin() {
   $("admin-stats").textContent = "Loading...";
   await loadProfiles();
   const count = (t) => sb.from(t).select("*", { count: "exact", head: true });
-  const [mods, adm, ban, photos, open, log] = await Promise.all([
+  const [mods, adm, ban, photos, open, log, appeals] = await Promise.all([
     sb.from("moderators").select("user_id"), sb.from("admins").select("user_id"), sb.from("banned_users").select("user_id"),
     count("photos"), sb.from("reports").select("*", { count: "exact", head: true }).eq("status", "open"),
-    sb.from("audit_log").select("*").order("created_at", { ascending: false }).limit(30)
+    sb.from("audit_log").select("*").order("created_at", { ascending: false }).limit(30),
+    sb.from("ban_appeals").select("*").order("created_at", { ascending: true })
   ]);
   adminData = {
     moderators: new Set((mods.data || []).map((x) => x.user_id)),
@@ -772,9 +805,40 @@ async function loadAdmin() {
   $("admin-stats").textContent = Object.keys(profilesById).length + " people \u00b7 " + (photos.count || 0) +
     " photos \u00b7 " + (open.count || 0) + " open reports \u00b7 " + adminData.moderators.size + " moderators \u00b7 " + adminData.banned.size + " banned";
   renderAdminUsers();
+  renderAppeals(appeals.data || []);
   $("admin-log").replaceChildren(...((log.data || []).length
     ? log.data.map((l) => el("p", { className: "log-row", text: new Date(l.created_at).toLocaleString() + " \u00b7 " + usernameFor(l.actor_id) + " \u00b7 " + l.action + " \u00b7 " + (l.target || "") }))
     : [note("No activity yet.")]));
+}
+
+// Unbanning also clears the old appeal, so a future ban gets a fresh single appeal.
+async function unbanUser(id) {
+  const res = await sb.from("banned_users").delete().eq("user_id", id);
+  if (res.error) return res;
+  await sb.from("ban_appeals").delete().eq("user_id", id);
+  return res;
+}
+
+function renderAppeals(list) {
+  const pending = list.filter((x) => x.status === "pending");
+  $("admin-appeals").replaceChildren(...(pending.length ? pending.map((ap) => {
+    const name = usernameFor(ap.user_id);
+    return el("div", { className: "user-line" }, [
+      el("span", { className: "grow", text: name + ": " + ap.message }),
+      el("button", { className: "secondary", text: "Approve (unban)", attrs: { type: "button" }, on: { click: async (e) => {
+        if (await runAction(e.target, async () => {
+          const res = await unbanUser(ap.user_id);
+          return res.error ? res : logAction("approve_appeal", name);
+        })) loadAdmin();
+      } } }),
+      el("button", { className: "secondary danger", text: "Deny", attrs: { type: "button" }, on: { click: async (e) => {
+        if (await runAction(e.target, async () => {
+          const res = await sb.from("ban_appeals").update({ status: "denied" }).eq("user_id", ap.user_id);
+          return res.error ? res : logAction("deny_appeal", name);
+        })) loadAdmin();
+      } } })
+    ]);
+  }) : [note("No pending appeals.")]));
 }
 
 function renderAdminUsers() {
@@ -795,9 +859,9 @@ function renderAdminUsers() {
           })) loadAdmin();
         } } }));
         kids.push(el("button", { className: "secondary danger", text: isBan ? "Unban" : "Ban", attrs: { type: "button" }, on: { click: async (e) => {
-          if (!isBan && !window.confirm("Ban " + name + "? They can still sign in but cannot post, rate or report.")) return;
+          if (!isBan && !window.confirm("Ban " + name + "? They will only see a ban screen where they can send one appeal.")) return;
           if (await runAction(e.target, async () => {
-            const res = isBan ? await sb.from("banned_users").delete().eq("user_id", id)
+            const res = isBan ? await unbanUser(id)
               : await sb.from("banned_users").insert({ user_id: id, banned_by: currentUser.id });
             return res.error ? res : logAction(isBan ? "unban_user" : "ban_user", name);
           })) loadAdmin();
